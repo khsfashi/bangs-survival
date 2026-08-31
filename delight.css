@@ -1,0 +1,65 @@
+/* Delight layer: daily fairy gacha, research tips, and encouragement. */
+.encouragement-strip {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 9px;
+  margin-top: 18px;
+  padding: 11px 13px;
+  border: 1px dashed #efc8d7;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fffafd, #fff4f8);
+}
+.encouragement-strip span {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--soft-accent);
+  color: var(--accent-strong);
+  font-size: .68rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.encouragement-strip strong { color: #5e4d56; font-size: .79rem; line-height: 1.45; }
+
+.evidence-advice { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #ead7df; }
+.evidence-heading { display: grid; gap: 4px; margin-bottom: 9px; }
+.evidence-heading > span { color: var(--accent-strong); font-size: .76rem; font-weight: 900; }
+.evidence-heading > small { color: var(--muted); font-size: .68rem; line-height: 1.45; }
+.evidence-tip-list { display: grid; gap: 8px; }
+.evidence-tip { padding: 11px 12px; border: 1px solid #eee3e8; border-radius: 14px; background: #fff; }
+.evidence-tip strong { display: block; margin-bottom: 4px; font-size: .83rem; }
+.evidence-tip p { margin: 0; color: var(--muted); font-size: .76rem; line-height: 1.55; }
+.evidence-sources { margin-top: 8px; color: var(--muted); font-size: .7rem; }
+.evidence-sources summary { cursor: pointer; font-weight: 800; }
+.evidence-sources ul { margin: 8px 0 0; padding-left: 18px; }
+.evidence-sources li { margin: 5px 0; line-height: 1.4; }
+.evidence-sources a { color: #6d5a65; text-decoration: underline; text-underline-offset: 2px; }
+
+.fairy-gacha-action { display: grid; gap: 5px; margin-top: 12px; }
+.fairy-gacha-button { padding: 12px 14px; }
+.fairy-gacha-rule { color: var(--muted); text-align: center; font-size: .67rem; }
+.fairy-gacha-action.is-drawing .fairy-gacha-button { opacity: .72; }
+
+.hair-roller-svg { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 8px 12px rgba(128, 67, 91, .12)); }
+.fairy-host.is-drawing .hair-roller-body { transform-origin: 80px 58px; animation: roller-shake .18s ease-in-out infinite alternate; }
+.fairy-host.is-drawing .hair-roller-sparkles { animation: sparkle-pulse .35s ease-in-out infinite alternate; }
+.fairy-host.is-pop .fairy-svg { transform-origin: center bottom; animation: fairy-pop .55s cubic-bezier(.2,.9,.25,1.2); }
+@keyframes roller-shake { from { transform: rotate(-8deg) translateY(1px); } to { transform: rotate(8deg) translateY(-2px); } }
+@keyframes sparkle-pulse { from { opacity: .25; transform: scale(.8); } to { opacity: 1; transform: scale(1.08); } }
+@keyframes fairy-pop { 0% { opacity: 0; transform: translateY(24px) scale(.45); } 65% { opacity: 1; transform: translateY(-6px) scale(1.08); } 100% { transform: translateY(0) scale(1); } }
+
+.fairy-gacha-book .fairy-collection { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fairy-gacha-book .fairy-book-item span { display: block; }
+.fairy-gacha-book .fairy-book-item.is-unlocked { border-color: #efd1dd; background: #fffafd; }
+
+@media (max-width: 430px) {
+  .encouragement-strip { grid-template-columns: 1fr; gap: 6px; }
+  .encouragement-strip span { justify-self: start; }
+  .fairy-gacha-book .fairy-collection { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fairy-host.is-drawing .hair-roller-body,
+  .fairy-host.is-drawing .hair-roller-sparkles,
+  .fairy-host.is-pop .fairy-svg { animation: none; }
+}
