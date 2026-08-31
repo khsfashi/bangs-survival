@@ -6,6 +6,7 @@ const STORAGE_KEY = 'bangs-survival-v1';
 const SEOUL = { latitude: 37.5665, longitude: 126.9780, label: '서울특별시 중구', source: 'demo' };
 const GOOD_ACCURACY_METERS = 80;
 const LOW_ACCURACY_METERS = 500;
+const LOCATION_JUMP_KM = 10;
 const REFINE_WINDOW_MS = 4500;
 const GEO_HARD_TIMEOUT_MS = 18000;
 const logic = window.BangsLogic;
@@ -16,6 +17,7 @@ const state = {
   selectedPosition: null,
   lastForecast: null,
   mapPicker: null,
+  autoOpenedFor: null,
   settings: loadSettings()
 };
 
@@ -72,12 +74,14 @@ function init() {
   el.settingsButton?.addEventListener('click', openSettings);
   el.saveSettingsButton?.addEventListener('click', saveSettingsFromDialog);
   document.querySelectorAll('[data-feedback]').forEach((button) => button.addEventListener('click', () => saveFeedback(button.dataset.feedback)));
+  renderSavedLocationShortcut();
   if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 }
 
 function requestCurrentLocation() {
+  removeLocationMismatchChoice();
   if (!navigator.geolocation) {
-    showError('이 브라우저에서는 위치 기능을 사용할 수 없습니다. 서울 예시를 이용해 주세요.');
+    showError('이 브라우저에서는 위치 기능을 사용할 수 없습니다. 저장 위치나 서울 예시를 이용해 주세요.');
     return;
   }
 
@@ -106,12 +110,16 @@ function requestCurrentLocation() {
     if (finished || !best) return;
     finished = true;
     cleanup();
-    usePosition({
+    const candidate = {
       latitude: best.coords.latitude,
       longitude: best.coords.longitude,
       accuracy: Number.isFinite(best.coords.accuracy) ? best.coords.accuracy : null,
       label: '현재 위치',
       source: 'geolocation'
+    };
+    handleGeolocationCandidate(candidate).catch((error) => {
+      console.error(error);
+      showError('현재 위치를 확인하는 중 오류가 났습니다. 저장 위치나 지도 보정을 이용해 주세요.');
     });
   };
 
@@ -120,9 +128,9 @@ function requestCurrentLocation() {
     finished = true;
     cleanup();
     if (error?.code === error.PERMISSION_DENIED) {
-      showError('위치 권한이 꺼져 있습니다. 브라우저의 위치 권한을 허용하거나 지도에서 직접 위치를 선택해 주세요.');
+      showError('위치 권한이 꺼져 있습니다. 브라우저의 위치 권한을 허용하거나 저장 위치를 이용해 주세요.');
     } else {
-      showError('현재 위치를 충분히 정확하게 확인하지 못했습니다. 다시 시도하거나 지도에서 직접 위치를 선택해 주세요.');
+      showError('현재 위치를 충분히 정확하게 확인하지 못했습니다. 다시 시도하거나 저장 위치를 이용해 주세요.');
     }
   };
 
@@ -134,7 +142,7 @@ function requestCurrentLocation() {
     if (!best || !Number.isFinite(bestAccuracy) || (Number.isFinite(accuracy) && accuracy < bestAccuracy)) best = position;
 
     if (el.loadingText && Number.isFinite(accuracy)) {
-      el.loadingText.textContent = `현재 위치를 다듬는 중입니다. 정확도 약 ±${formatDistance(accuracy)}.`;
+      el.loadingText.textContent = `현재 위치를 다듬는 중입니다. 브라우저가 보고한 정확도는 약 ±${formatDistance(accuracy)}입니다.`;
     }
 
     if (Number.isFinite(accuracy) && accuracy <= GOOD_ACCURACY_METERS) {
@@ -152,17 +160,102 @@ function requestCurrentLocation() {
   });
 }
 
+async function handleGeolocationCandidate(candidate) {
+  const resolved = await resolvePositionLabel(candidate);
+  const saved = state.settings.savedLocation;
+  if (saved && logic.isSuspiciousLocationJump(resolved, saved, LOCATION_JUMP_KM)) {
+    const distance = logic.distanceKm(resolved, saved);
+    showLocationMismatchChoice(resolved, saved, distance);
+    return;
+  }
+  await useResolvedPosition(resolved);
+}
+
 async function usePosition(position) {
   const resolved = await resolvePositionLabel(position);
+  await useResolvedPosition(resolved);
+}
+
+async function useResolvedPosition(resolved) {
+  removeLocationMismatchChoice();
   state.lastPosition = resolved;
   state.selectedPosition = resolved;
   await fetchForecast(resolved);
 }
 
 async function resolvePositionLabel(position) {
+  if (position?.region?.label) return { ...position, label: position.region.label };
   if (!mapApi) return position;
   const region = await mapApi.resolveRegion(position);
   return region ? { ...position, label: region.label, region } : position;
+}
+
+function showLocationMismatchChoice(candidate, saved, distanceKm) {
+  showOnly('permission');
+  removeLocationMismatchChoice();
+  const panel = document.createElement('div');
+  panel.id = 'locationMismatchPanel';
+  panel.className = 'location-choice-panel';
+
+  const title = document.createElement('strong');
+  title.textContent = '현재 위치가 마지막 확인 위치와 많이 달라요';
+  const description = document.createElement('p');
+  const distance = Number.isFinite(distanceKm) ? `${Math.round(distanceKm)}km` : '멀리';
+  description.textContent = `브라우저는 '${candidate.label || '현재 위치'}'를 찾았지만, 마지막으로 지도에서 확인한 '${saved.label}'와 약 ${distance} 차이 납니다. PC 위치는 크게 틀릴 수 있으니 사용할 위치를 골라 주세요.`;
+
+  const actions = document.createElement('div');
+  actions.className = 'location-choice-actions';
+  const savedButton = document.createElement('button');
+  savedButton.type = 'button';
+  savedButton.className = 'primary-button';
+  savedButton.textContent = `저장 위치 사용 · ${saved.label}`;
+  savedButton.addEventListener('click', () => usePosition({ ...saved, source: 'saved' }));
+
+  const currentButton = document.createElement('button');
+  currentButton.type = 'button';
+  currentButton.className = 'secondary-button';
+  currentButton.textContent = `브라우저 위치 사용 · ${candidate.label || '현재 위치'}`;
+  currentButton.addEventListener('click', () => useResolvedPosition(candidate));
+
+  actions.append(savedButton, currentButton);
+  panel.append(title, description, actions);
+  const privacyNote = el.permissionCard?.querySelector('.privacy-note');
+  if (privacyNote) el.permissionCard.insertBefore(panel, privacyNote);
+  else el.permissionCard?.appendChild(panel);
+}
+
+function removeLocationMismatchChoice() {
+  document.querySelector('#locationMismatchPanel')?.remove();
+}
+
+function renderSavedLocationShortcut() {
+  const saved = state.settings.savedLocation;
+  let button = document.querySelector('#savedLocationButton');
+  if (!saved) {
+    button?.remove();
+    return;
+  }
+  if (!button) {
+    button = document.createElement('button');
+    button.id = 'savedLocationButton';
+    button.type = 'button';
+    button.className = 'secondary-button saved-location-button';
+    el.locationButton?.insertAdjacentElement('afterend', button);
+  }
+  button.textContent = `최근 확인 위치로 보기 · ${saved.label}`;
+  button.onclick = () => usePosition({ ...saved, source: 'saved' });
+}
+
+function savePreferredLocation(position) {
+  const saved = logic.normalizeSavedLocation({
+    ...position,
+    label: position.region?.label || position.label,
+    savedAt: new Date().toISOString()
+  });
+  if (!saved) return;
+  state.settings.savedLocation = saved;
+  persistSettings();
+  renderSavedLocationShortcut();
 }
 
 async function fetchForecast(position) {
@@ -265,7 +358,7 @@ function renderForecast(forecast) {
   el.locationLabel.textContent = forecast.label || '선택한 위치';
   el.updatedLabel.textContent = `${formatTime(forecast.generatedAt)} 기준`;
   el.gridLabel.textContent = buildLocationMeta(forecast.grid, state.lastPosition);
-  el.gridLabel.style.color = isLowAccuracy(state.lastPosition) ? '#b54757' : '';
+  el.gridLabel.style.color = needsLocationVerification(state.lastPosition) ? '#b54757' : '';
   el.sourceBadge.textContent = forecast.source === 'KMA' ? '기상청 동네예보' : '대체 예보';
   el.dataSourceLabel.textContent = forecast.source === 'KMA' ? '기상청 동네예보' : 'Open-Meteo fallback';
   el.scoreValue.textContent = String(current.score);
@@ -297,8 +390,15 @@ function renderForecast(forecast) {
   el.timeline.replaceChildren(...forecast.hours.map((hour) => createTimelineItem(hour, hour === forecast.best)));
   renderFeedbackState(forecast);
 
-  if (isLowAccuracy(state.lastPosition)) {
-    el.editLocationButton.textContent = '위치가 부정확해요 · 지도에서 보정';
+  if (needsLocationVerification(state.lastPosition)) {
+    el.editLocationButton.textContent = isLikelyDesktop()
+      ? 'PC 위치는 추정값이에요 · 지도에서 확인'
+      : '위치가 부정확해요 · 지도에서 보정';
+    const key = positionKey(state.lastPosition);
+    if (state.autoOpenedFor !== key) {
+      state.autoOpenedFor = key;
+      window.setTimeout(() => openLocationPicker(), 0);
+    }
   } else {
     el.editLocationButton.textContent = '지도에서 위치 조정';
   }
@@ -307,16 +407,34 @@ function renderForecast(forecast) {
 function buildLocationMeta(grid, position) {
   const parts = [];
   if (grid) parts.push(`기상청 격자 ${grid.nx}, ${grid.ny}`);
-  if (position?.source === 'manual') parts.push('지도에서 직접 선택');
-  else if (Number.isFinite(position?.accuracy)) {
-    parts.push(`위치 정확도 약 ±${formatDistance(position.accuracy)}`);
-    if (position.accuracy > LOW_ACCURACY_METERS) parts.push('지도 보정 권장');
+  if (position?.source === 'manual') {
+    parts.push('지도에서 직접 확인');
+    parts.push('최근 위치로 이 브라우저에 저장됨');
+  } else if (position?.source === 'saved') {
+    parts.push('최근에 지도에서 확인한 위치');
+  } else if (position?.source === 'geolocation') {
+    if (Number.isFinite(position?.accuracy)) parts.push(`브라우저 보고 정확도 ±${formatDistance(position.accuracy)}`);
+    if (isLikelyDesktop()) parts.push('PC 위치는 실제와 크게 다를 수 있음 · 지도 확인 권장');
+    else if (Number.isFinite(position?.accuracy) && position.accuracy > LOW_ACCURACY_METERS) parts.push('지도 보정 권장');
   }
   return parts.join(' · ');
 }
 
-function isLowAccuracy(position) {
-  return position?.source === 'geolocation' && Number.isFinite(position?.accuracy) && position.accuracy > LOW_ACCURACY_METERS;
+function needsLocationVerification(position) {
+  if (position?.source !== 'geolocation') return false;
+  if (isLikelyDesktop()) return true;
+  return Number.isFinite(position?.accuracy) && position.accuracy > LOW_ACCURACY_METERS;
+}
+
+function isLikelyDesktop() {
+  if (navigator.userAgentData && typeof navigator.userAgentData.mobile === 'boolean') return !navigator.userAgentData.mobile;
+  return !/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+}
+
+function positionKey(position) {
+  const lat = Number(position?.latitude);
+  const lon = Number(position?.longitude);
+  return Number.isFinite(lat) && Number.isFinite(lon) ? `${lat.toFixed(4)},${lon.toFixed(4)}` : 'unknown';
 }
 
 function formatDistance(meters) {
@@ -327,10 +445,15 @@ function formatDistance(meters) {
 }
 
 async function openLocationPicker() {
+  if (!state.lastPosition) return;
   el.mapPanel.classList.remove('hidden');
-  el.mapStatus.textContent = isLowAccuracy(state.lastPosition)
-    ? `브라우저 위치가 약 ±${formatDistance(state.lastPosition.accuracy)} 범위라 부정확할 수 있습니다. 마커를 실제 동네로 옮겨 주세요.`
-    : '마커를 끌거나 지도를 눌러 위치를 바꾸세요.';
+  if (needsLocationVerification(state.lastPosition)) {
+    el.mapStatus.textContent = isLikelyDesktop()
+      ? 'PC 브라우저 위치는 정확도 숫자가 좋아 보여도 실제와 크게 다를 수 있습니다. 동네·주소 검색이나 지도로 실제 위치를 확인해 주세요.'
+      : `브라우저 위치가 약 ±${formatDistance(state.lastPosition.accuracy)} 범위라 부정확할 수 있습니다. 마커를 실제 동네로 옮겨 주세요.`;
+  } else {
+    el.mapStatus.textContent = '마커를 끌거나 지도를 눌러 위치를 바꾸세요.';
+  }
   if (!mapApi) {
     el.mapStatus.textContent = '지도 모듈을 불러오지 못했습니다.';
     return;
@@ -339,7 +462,7 @@ async function openLocationPicker() {
     state.mapPicker = await mapApi.createPicker(el.mapContainer, state.lastPosition, ({ latitude, longitude, region }) => {
       state.selectedPosition = { latitude, longitude, label: region?.label || '지도에서 선택한 위치', region, source: 'manual', accuracy: null };
       const grid = logic.toKmaGrid(latitude, longitude);
-      el.mapStatus.textContent = `${state.selectedPosition.label} · 기상청 격자 ${grid.nx}, ${grid.ny} · 지도에서 직접 선택`;
+      el.mapStatus.textContent = `${state.selectedPosition.label} · 기상청 격자 ${grid.nx}, ${grid.ny} · 이 위치를 확정하면 다음 방문에도 사용할 수 있어요.`;
     });
   } else {
     state.mapPicker.setPosition(state.lastPosition);
@@ -351,13 +474,15 @@ async function openLocationPicker() {
   }
   const region = await mapApi.resolveRegion(state.lastPosition);
   const grid = logic.toKmaGrid(state.lastPosition.latitude, state.lastPosition.longitude);
-  const accuracyText = Number.isFinite(state.lastPosition?.accuracy) ? ` · 현재 GPS 정확도 ±${formatDistance(state.lastPosition.accuracy)}` : '';
-  el.mapStatus.textContent = `${region?.label || state.lastPosition.label} · 기상청 격자 ${grid.nx}, ${grid.ny}${accuracyText}`;
+  const accuracyText = Number.isFinite(state.lastPosition?.accuracy) ? ` · 브라우저 보고 정확도 ±${formatDistance(state.lastPosition.accuracy)}` : '';
+  const warningText = needsLocationVerification(state.lastPosition) ? ' · 실제 위치를 지도에서 확인해 주세요' : '';
+  el.mapStatus.textContent = `${region?.label || state.lastPosition.label} · 기상청 격자 ${grid.nx}, ${grid.ny}${accuracyText}${warningText}`;
 }
 
 async function applySelectedMapPosition() {
   if (!state.selectedPosition) return;
   const selected = { ...state.selectedPosition, source: 'manual', accuracy: null };
+  savePreferredLocation(selected);
   el.mapPanel.classList.add('hidden');
   await usePosition(selected);
 }
@@ -385,7 +510,7 @@ function createTimelineItem(hour, isBest) {
   item.className = `timeline-item${isBest ? ' best' : ''}`;
   item.setAttribute('role', 'listitem');
   const riskLabel = hour.score >= 70 ? '안전' : hour.score >= 45 ? '주의' : '위험';
-  item.innerHTML = `<span class="timeline-time">${escapeHtml(formatHour(new Date(hour.time)))}</span><strong class="timeline-score">${hour.score}</strong><span class="timeline-risk">${riskLabel}</span>`;
+  item.innerHTML = `<span class="timeline-time">${formatHour(new Date(hour.time))}</span><strong class="timeline-score">${hour.score}</strong><span class="timeline-risk">${riskLabel}</span>`;
   return item;
 }
 
@@ -450,12 +575,14 @@ function loadSettings() {
     const feedback = Array.isArray(parsed.feedback)
       ? parsed.feedback.map(logic?.normalizeFeedbackSample || ((sample) => sample)).filter(Boolean).slice(-30)
       : [];
+    const savedLocation = logic?.normalizeSavedLocation ? logic.normalizeSavedLocation(parsed.savedLocation) : null;
     return {
       sensitivity: ['low', 'normal', 'high'].includes(parsed.sensitivity) ? parsed.sensitivity : 'normal',
-      feedback
+      feedback,
+      savedLocation
     };
   } catch {
-    return { sensitivity: 'normal', feedback: [] };
+    return { sensitivity: 'normal', feedback: [], savedLocation: null };
   }
 }
 
@@ -471,5 +598,4 @@ function showOnly(target) {
 function safeNumber(value) { const number = Number(value); return Number.isFinite(number) ? number : 0; }
 function formatTime(date) { return new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit' }).format(date); }
 function formatHour(date) { return new Intl.DateTimeFormat('ko-KR', { hour: 'numeric', timeZone: 'Asia/Seoul' }).format(date); }
-function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]); }
 })();

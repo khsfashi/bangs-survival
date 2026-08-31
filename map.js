@@ -3,46 +3,6 @@
   let sdkPromise = null;
   let configPromise = null;
 
-  function reportDiagnostic(event, detail = '') {
-    try {
-      fetch('/api/client-log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event, detail })
-      }).catch(() => {});
-    } catch {}
-  }
-
-  function installDiagnostics() {
-    const locationButton = document.querySelector('#locationButton');
-    if (locationButton) {
-      locationButton.addEventListener('click', () => {
-        const originalText = locationButton.textContent;
-        locationButton.textContent = '위치 확인 중…';
-        locationButton.setAttribute('aria-busy', 'true');
-        reportDiagnostic('location_click', `geolocation=${Boolean(navigator.geolocation)};secureContext=${Boolean(window.isSecureContext)}`);
-        window.setTimeout(() => {
-          const loadingHidden = document.querySelector('#loadingCard')?.classList.contains('hidden');
-          const permissionHidden = document.querySelector('#permissionCard')?.classList.contains('hidden');
-          reportDiagnostic('location_ui_after_click', `loadingHidden=${loadingHidden};permissionHidden=${permissionHidden}`);
-          if (loadingHidden && permissionHidden === false) {
-            locationButton.textContent = originalText;
-            locationButton.removeAttribute('aria-busy');
-            const note = document.querySelector('.privacy-note');
-            if (note) note.textContent = '버튼 동작을 시작하지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.';
-          }
-        }, 500);
-      }, { capture: true });
-    }
-
-    window.addEventListener('error', (event) => reportDiagnostic('window_error', String(event.message || 'unknown_error').slice(0, 220)));
-    window.addEventListener('unhandledrejection', (event) => {
-      const reason = event.reason instanceof Error ? event.reason.message : String(event.reason || 'unknown_rejection');
-      reportDiagnostic('unhandled_rejection', reason.slice(0, 220));
-    });
-    reportDiagnostic('diagnostics_ready', `geolocation=${Boolean(navigator.geolocation)};secureContext=${Boolean(window.isSecureContext)}`);
-  }
-
   async function getConfig() {
     if (!configPromise) {
       configPromise = fetch('/api/config')
@@ -71,7 +31,6 @@
       return Boolean(window.kakao?.maps?.services);
     })().catch((error) => {
       console.warn(error);
-      reportDiagnostic('kakao_sdk_error', String(error?.message || error).slice(0, 220));
       return false;
     });
 
@@ -150,6 +109,7 @@
       .map-search-input{min-width:0;border:1px solid #ead7df;border-radius:14px;padding:12px 14px;font:inherit;background:#fff;color:#20171c;outline:none}
       .map-search-input:focus{border-color:#e9518d;box-shadow:0 0 0 3px rgba(233,81,141,.12)}
       .map-search-button{border:0;border-radius:14px;padding:0 16px;background:#30262c;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+      .map-search-button:disabled{opacity:.55;cursor:wait}
       .map-search-result{grid-column:1/-1;margin:0 2px;font-size:13px;line-height:1.45;color:#7d6871}
       @media (max-width:520px){.map-search-panel{grid-template-columns:1fr}.map-search-button{padding:11px 14px}.map-search-result{grid-column:1}}
     `;
@@ -203,17 +163,15 @@
         const found = await onSearch(query);
         if (!found) {
           result.textContent = '검색 결과를 찾지 못했어요. 시·구·동을 함께 입력하거나 도로명 주소를 입력해 보세요.';
-          reportDiagnostic('map_search_not_found', `queryLength=${query.length}`);
           return;
         }
         const display = found.placeName && !found.label.includes(found.placeName)
           ? `${found.placeName} · ${found.label}`
           : found.label;
         result.textContent = `${display} 근처로 이동했어요. 지도를 확인한 뒤 아래 '이 위치로 다시 계산'을 눌러 주세요.`;
-        reportDiagnostic('map_search_success', `kind=${found.kind}`);
       } catch (error) {
+        console.warn(error);
         result.textContent = '검색 중 오류가 났어요. 잠시 뒤 다시 시도해 주세요.';
-        reportDiagnostic('map_search_error', String(error?.message || error).slice(0, 120));
       } finally {
         button.disabled = false;
         button.textContent = '검색';
@@ -265,5 +223,4 @@
   }
 
   window.BangsMap = { getConfig, loadSdk, resolveRegion, searchLocation, createPicker };
-  installDiagnostics();
 })();

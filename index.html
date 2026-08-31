@@ -13,7 +13,7 @@
 <body>
   <main class="app-shell">
     <header class="topbar"><div><p class="eyebrow">BANGS SURVIVAL FORECAST</p><h1>앞머리 생존예보</h1></div><button id="settingsButton" class="icon-button" type="button" aria-label="설정 열기">⚙</button></header>
-    <section id="permissionCard" class="card permission-card"><p class="card-kicker">내 동네 날씨로 계산해요</p><h2>오늘 앞머리, 해도 될까?</h2><p>현재 위치를 잡은 뒤 한국 동네예보 기준으로 계산합니다. 위치가 어긋나면 결과 화면에서 지도 마커를 옮겨 직접 보정할 수 있습니다.</p><button id="locationButton" class="primary-button" type="button">현재 위치로 확인하기</button><button id="demoButton" class="text-button" type="button">위치 없이 서울 예시 보기</button><p class="privacy-note">선택한 좌표는 예보 조회에만 사용하며 이 앱의 DB에 저장하지 않습니다.</p></section>
+    <section id="permissionCard" class="card permission-card"><p class="card-kicker">내 동네 날씨로 계산해요</p><h2>오늘 앞머리, 해도 될까?</h2><p>현재 위치를 잡은 뒤 한국 동네예보 기준으로 계산합니다. 특히 PC에서는 브라우저 위치가 실제와 크게 다를 수 있어 처음 한 번 지도나 동네 검색으로 확인하는 것을 권장합니다.</p><button id="locationButton" class="primary-button" type="button">현재 위치로 확인하기</button><button id="demoButton" class="text-button" type="button">위치 없이 서울 예시 보기</button><p class="privacy-note">예보 조회 좌표는 서버 DB에 저장하지 않습니다. 지도에서 직접 확정한 최근 위치만 다음 사용을 위해 이 브라우저의 localStorage에 저장합니다.</p></section>
     <section id="loadingCard" class="card state-card hidden" aria-live="polite"><div class="spinner" aria-hidden="true"></div><p>동네 날씨를 읽고 앞머리 상태를 계산하는 중입니다.</p></section>
     <section id="errorCard" class="card state-card hidden" aria-live="assertive"><p class="error-symbol">!</p><h2>날씨를 불러오지 못했어요</h2><p id="errorMessage">잠시 뒤 다시 시도해 주세요.</p><button id="retryButton" class="secondary-button" type="button">다시 시도하기</button></section>
     <div id="forecastView" class="hidden">
