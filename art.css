@@ -1,0 +1,65 @@
+/* Local character art. The weather fairy renderer is deterministic and makes no network requests. */
+.mascot-art.mascot-illustration {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  width: 150px;
+  height: 150px;
+  border-radius: 46px;
+  background: radial-gradient(circle at 50% 36%, #fff 0 22%, #fff1f7 55%, #ffe8f1 100%);
+}
+.mascot-svg { width: 146px; height: 146px; overflow: visible; }
+.mascot-hair-back, .mascot-bang, .mascot-side-hair { fill: #49353f; }
+.mascot-neck { fill: #ffd7e3; }
+.mascot-shirt { fill: #f9c4d8; }
+.mascot-face-shape { fill: #ffe2ea; stroke: #efaac0; stroke-width: 2; }
+.mascot-bang { transition: transform .22s ease; transform-box: fill-box; transform-origin: center top; }
+.mascot-eyes, .mascot-mouth, .mascot-brows { fill: none; stroke: #49353f; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+.mascot-mouth { stroke: #d45582; }
+.mascot-cheek { fill: #f49ab8; opacity: .58; }
+.mascot-sparkle { fill: #fff; }
+.mascot-sweat { fill: #83c9ef; opacity: 0; }
+.mascot-face-state { display: none; }
+.mascot-ribbon path { fill: #ef6f9e; }
+.mascot-ribbon circle { fill: #cc4f7f; }
+.mascot[data-mood=great] .mascot-face-great,
+.mascot[data-mood=okay] .mascot-face-okay,
+.mascot[data-mood=worried] .mascot-face-worried,
+.mascot[data-mood=doomed] .mascot-face-doomed { display: block; }
+.mascot[data-mood=okay] .mascot-bang-right { transform: rotate(3deg) translateY(2px); }
+.mascot[data-mood=worried] .mascot-bang-left { transform: rotate(-4deg) translate(-2px, 5px); }
+.mascot[data-mood=worried] .mascot-bang-right { transform: rotate(8deg) translate(3px, 6px); }
+.mascot[data-mood=worried] .mascot-sweat { opacity: .8; }
+.mascot[data-mood=doomed] .mascot-bang-left { transform: rotate(-9deg) translate(-4px, 11px); }
+.mascot[data-mood=doomed] .mascot-bang-right { transform: rotate(13deg) translate(5px, 12px); }
+.mascot[data-mood=doomed] .mascot-sweat { opacity: 1; }
+
+.companion-art.fairy-host { display: grid; place-items: center; overflow: hidden; padding: 7px; }
+.fairy-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.fairy-svg.is-locked .fairy-artwork { filter: grayscale(1); opacity: .26; }
+
+.fairy-book { margin-top: 14px; border-top: 1px dashed #ead7df; padding-top: 12px; }
+.fairy-book summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; list-style: none; font-size: .82rem; font-weight: 900; color: #665862; }
+.fairy-book summary::-webkit-details-marker { display: none; }
+.fairy-book summary::after { content: '＋'; color: var(--accent-strong); font-size: 1rem; }
+.fairy-book[open] summary::after { content: '－'; }
+.fairy-book summary strong { margin-left: auto; padding: 4px 8px; border-radius: 999px; background: #fff; border: 1px solid #f0d4df; color: var(--accent-strong); font-size: .7rem; }
+.fairy-book-note { margin: 9px 0 12px; color: var(--muted); font-size: .74rem; line-height: 1.5; }
+.fairy-collection { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.fairy-book-item { min-width: 0; display: grid; justify-items: center; gap: 4px; padding: 9px 5px; border: 1px solid var(--border); border-radius: 15px; background: rgba(255,255,255,.78); text-align: center; }
+.fairy-book-art { width: 54px; height: 54px; }
+.fairy-book-item strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .68rem; }
+.fairy-book-item span { display: none; color: var(--muted); font-size: .63rem; line-height: 1.35; }
+.fairy-book-item.is-locked strong { color: #a49aa0; }
+
+@media (max-width: 430px) {
+  .mascot-art.mascot-illustration { width: 140px; height: 140px; }
+  .mascot-svg { width: 136px; height: 136px; }
+  .fairy-collection { grid-template-columns: repeat(3, 1fr); }
+  .fairy-book-item span { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-bang { transition: none; }
+}

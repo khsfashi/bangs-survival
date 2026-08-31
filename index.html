@@ -9,6 +9,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/art.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -59,16 +60,43 @@
       <section class="hero-card card">
         <div class="hero-topline"><span>앞머리 생존점수</span><span id="updatedLabel" class="updated-label"></span></div>
         <div id="mascot" class="mascot" data-mood="great" aria-live="polite">
-          <div class="remote-art mascot-art">
-            <span class="remote-art-fallback" aria-hidden="true">🎀</span>
-            <img
-              id="mascotImage"
-              class="mascot-image"
-              src="https://api.dicebear.com/10.x/lorelei/svg?seed=bangs-survival-guide"
-              alt="앞머리 생존예보 안내 캐릭터"
-              decoding="async"
-              referrerpolicy="no-referrer"
-            />
+          <div class="mascot-art mascot-illustration">
+            <svg class="mascot-svg" viewBox="0 0 180 170" role="img" aria-label="리본을 단 여성 앞머리 캐릭터">
+              <path class="mascot-hair-back" d="M43 84C40 43 59 20 89 18c34-2 53 22 49 67l-2 54c-10 10-23 16-45 16-21 0-36-6-48-16Z"/>
+              <path class="mascot-neck" d="M75 122h30v25H75Z"/>
+              <path class="mascot-shirt" d="M55 166c4-27 21-36 35-36s31 9 35 36Z"/>
+              <ellipse class="mascot-face-shape" cx="90" cy="84" rx="40" ry="45"/>
+              <path class="mascot-bang mascot-bang-left" d="M48 76c4-30 23-48 49-48 2 21-8 36-30 49 1-13-3-25-9-34-1 14-4 24-10 33Z"/>
+              <path class="mascot-bang mascot-bang-right" d="M91 29c25-4 42 12 45 39-10-7-20-10-31-8 1 11-3 21-11 31-7-19-8-41-3-62Z"/>
+              <path class="mascot-side-hair" d="M49 77c-2 21 1 42 10 58l-12 7c-10-18-14-44-11-63Z"/>
+              <path class="mascot-side-hair" d="M135 73c5 22 2 47-7 64l12 6c10-20 13-47 8-70Z"/>
+              <g class="mascot-ribbon" transform="translate(132 49) rotate(15)">
+                <path d="M0 7C8-3 17 0 18 6 19 13 10 15 0 7Z"/>
+                <path d="M0 7C-8-3-17 0-18 6-19 13-10 15 0 7Z"/>
+                <circle cy="7" r="5"/>
+              </g>
+              <ellipse class="mascot-cheek" cx="61" cy="102" rx="7" ry="3.3"/>
+              <ellipse class="mascot-cheek" cx="119" cy="102" rx="7" ry="3.3"/>
+              <g class="mascot-face-state mascot-face-great">
+                <path class="mascot-eyes" d="M67 83q8 8 16 0M98 83q8 8 16 0"/>
+                <path class="mascot-mouth" d="M75 108q15 17 30 0"/>
+              </g>
+              <g class="mascot-face-state mascot-face-okay">
+                <path class="mascot-eyes" d="M69 84q6 5 12 0M100 84q6 5 12 0"/>
+                <path class="mascot-mouth" d="M80 110q10 9 20 0"/>
+              </g>
+              <g class="mascot-face-state mascot-face-worried">
+                <path class="mascot-brows" d="M68 77l12-4M101 73l12 4"/>
+                <circle cx="75" cy="87" r="3.5" fill="#49353f"/>
+                <circle cx="107" cy="87" r="3.5" fill="#49353f"/>
+                <path class="mascot-mouth" d="M80 116q10-9 20 0"/>
+              </g>
+              <g class="mascot-face-state mascot-face-doomed">
+                <path class="mascot-eyes" d="M68 81l12 12M80 81 68 93M101 81l12 12M113 81l-12 12"/>
+                <path class="mascot-mouth" d="M78 118q12-12 24 0"/>
+              </g>
+              <path class="mascot-sweat" d="M143 70c8 10 9 17 3 22-6 5-15 1-14-7 1-5 6-10 11-15Z"/>
+            </svg>
           </div>
           <span id="mascotStatus" class="mascot-status">오늘은 리본도 안심이에요.</span>
         </div>
@@ -97,12 +125,14 @@
             <h2 id="companionName">오늘의 앞머리 요정</h2>
             <p id="companionMessage" class="companion-message">예보를 확인하면 오늘 날씨에 맞는 작은 친구를 만날 수 있어요.</p>
           </div>
-          <div class="remote-art companion-art">
-            <span class="remote-art-fallback" aria-hidden="true">✨</span>
-            <img id="companionImage" class="companion-image" alt="오늘의 앞머리 요정" decoding="async" referrerpolicy="no-referrer" />
-          </div>
+          <div id="companionIllustration" class="companion-art fairy-host" aria-hidden="true"></div>
         </div>
         <p id="companionCount" class="companion-count">만난 친구는 이 브라우저에만 기록합니다.</p>
+        <details id="fairyBook" class="fairy-book">
+          <summary><span>앞머리 요정 도감</span><strong id="fairyBookCount">0/5</strong></summary>
+          <p class="fairy-book-note">비, 바람, 습기 같은 실제 날씨를 만나면서 도감이 자연스럽게 채워집니다. 놓친 날에 불이익은 없습니다.</p>
+          <div id="fairyCollection" class="fairy-collection" aria-live="polite"></div>
+        </details>
       </section>
 
       <section class="card best-time-card">
@@ -134,7 +164,7 @@
       <footer class="footer-note">
         <p>이 점수는 날씨 기반 휴리스틱이며 결과를 보장하지 않습니다.</p>
         <p>날씨 데이터: <span id="dataSourceLabel">확인 중</span></p>
-        <p>캐릭터: DiceBear Lorelei / Critters (CC0 1.0). 캐릭터 요청에는 위치나 개인 식별정보를 넣지 않습니다.</p>
+        <p>캐릭터는 로컬 SVG로 렌더링하며 외부 이미지 요청을 하지 않습니다. 관련 오픈소스와 디자인 prior art는 PRIOR_ART.md에 기록합니다.</p>
       </footer>
     </div>
   </main>
@@ -156,5 +186,6 @@
   <script src="/logic.js" defer></script>
   <script src="/map.js" defer></script>
   <script src="/app.js" defer></script>
+  <script src="/fairies.js" defer></script>
 </body>
 </html>
