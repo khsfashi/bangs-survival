@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fff8fb" />
+  <meta name="description" content="습도, 이슬점, 비, 바람으로 오늘 앞머리 생존 가능성을 확인하는 모바일 웹앱" />
+  <title>앞머리 생존예보</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar"><div><p class="eyebrow">BANGS SURVIVAL FORECAST</p><h1>앞머리 생존예보</h1></div><button id="settingsButton" class="icon-button" type="button" aria-label="설정 열기">⚙</button></header>
+    <section id="permissionCard" class="card permission-card"><p class="card-kicker">내 동네 날씨로 계산해요</p><h2>오늘 앞머리, 해도 될까?</h2><p>현재 위치의 습도·이슬점·강수확률·바람을 확인해서 앞으로 12시간을 계산합니다.</p><button id="locationButton" class="primary-button" type="button">현재 위치로 확인하기</button><button id="demoButton" class="text-button" type="button">위치 없이 서울 예시 보기</button><p class="privacy-note">위치 좌표는 날씨 조회에만 사용하며 이 앱의 서버에 저장하지 않습니다.</p></section>
+    <section id="loadingCard" class="card state-card hidden" aria-live="polite"><div class="spinner" aria-hidden="true"></div><p>날씨를 읽고 앞머리 상태를 계산하는 중입니다.</p></section>
+    <section id="errorCard" class="card state-card hidden" aria-live="assertive"><p class="error-symbol">!</p><h2>날씨를 불러오지 못했어요</h2><p id="errorMessage">잠시 뒤 다시 시도해 주세요.</p><button id="retryButton" class="secondary-button" type="button">다시 시도하기</button></section>
+    <div id="forecastView" class="hidden">
+      <section class="hero-card card"><div class="hero-topline"><span id="locationLabel" class="location-label">현재 위치</span><span id="updatedLabel" class="updated-label"></span></div><div id="mascot" class="mascot" data-mood="great" aria-live="polite"><svg class="mascot-svg" viewBox="0 0 220 180" role="img" aria-label="앞머리 캐릭터"><path class="mascot-back-hair" d="M45 93C42 43 72 17 110 17s69 26 65 76l-6 47H51Z"/><ellipse class="mascot-face" cx="110" cy="94" rx="57" ry="54"/><path class="mascot-bangs bangs-left" d="M55 73c15-34 45-47 75-38-2 25-14 45-36 63-9-18-20-31-32-40 0 14-2 24-7 30Z"/><path class="mascot-bangs bangs-right" d="M100 35c34-6 57 10 65 42-15-11-29-16-43-15 2 13-2 27-11 42-8-24-12-46-11-69Z"/><g class="face face-great"><path d="M79 92q10 12 20 0M121 92q10 12 20 0"/><path class="mouth" d="M87 118q23 24 46 0"/></g><g class="face face-okay"><circle cx="90" cy="94" r="4"/><circle cx="130" cy="94" r="4"/><path class="mouth" d="M94 120q16 11 32 0"/></g><g class="face face-worried"><path d="M81 88l16-5M123 83l16 5"/><circle cx="91" cy="96" r="4"/><circle cx="129" cy="96" r="4"/><path class="mouth" d="M95 125q15-12 30 0"/></g><g class="face face-doomed"><path d="M82 89l14 14M96 89l-14 14M124 89l14 14M138 89l-14 14"/><path class="mouth" d="M92 127q18-15 36 0"/></g><path class="cheek cheek-left" d="M68 111h13"/><path class="cheek cheek-right" d="M139 111h13"/><path class="sweat-drop" d="M174 56c10 13 12 22 4 29-8 7-21 2-20-9 1-7 8-14 16-20Z"/></svg><span id="mascotStatus" class="mascot-status">오늘 나 꽤 멀쩡해!</span></div><div class="score-layout"><div class="score-ring" id="scoreRing" aria-label="앞머리 생존점수"><strong id="scoreValue">--</strong><span>점</span></div><div class="verdict-wrap"><p id="verdictBadge" class="verdict-badge">계산 중</p><h2 id="verdictTitle">오늘의 앞머리 판정</h2><p id="verdictDescription" class="verdict-description"></p></div></div><div id="reasonChips" class="reason-chips"></div></section>
+      <section class="card best-time-card"><p class="card-kicker">오늘의 추천</p><h2 id="bestWindowTitle">가장 안전한 외출 시간</h2><p id="bestWindowDescription"></p></section>
+      <section class="card timeline-card"><div class="section-heading"><div><p class="card-kicker">앞으로 12시간</p><h2>시간대별 생존도</h2></div><span class="small-note">높을수록 안전</span></div><div id="timeline" class="timeline" role="list"></div></section>
+      <section class="card feedback-card"><p class="card-kicker">개인 보정</p><h2>실제로는 어땠나요?</h2><p>하루에 하나의 결과만 저장합니다. 같은 날 다시 누르면 새 기록이 아니라 오늘의 결과를 수정합니다.</p><div class="feedback-buttons"><button class="feedback-button" data-feedback="survived" type="button" aria-pressed="false">유지됨</button><button class="feedback-button" data-feedback="shaky" type="button" aria-pressed="false">조금 무너짐</button><button class="feedback-button" data-feedback="failed" type="button" aria-pressed="false">망함</button></div><p id="feedbackStatus" class="feedback-status"></p></section>
+      <footer class="footer-note"><p>이 점수는 날씨 기반 휴리스틱이며 결과를 보장하지 않습니다.</p><p>날씨 데이터: <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> · CC BY 4.0</p></footer>
+    </div>
+  </main>
+  <dialog id="settingsDialog" class="settings-dialog"><form method="dialog"><div class="dialog-heading"><div><p class="card-kicker">설정</p><h2>내 앞머리 민감도</h2></div><button class="icon-button" value="cancel" aria-label="닫기">×</button></div><p>처음에는 기본값으로 시작하고, 실제 결과 피드백이 쌓이면 자동 보정됩니다.</p><label class="setting-option"><input type="radio" name="sensitivity" value="low" /><span><strong>튼튼함</strong><small>습기에 비교적 잘 버텨요.</small></span></label><label class="setting-option"><input type="radio" name="sensitivity" value="normal" /><span><strong>보통</strong><small>일반적인 기준으로 계산해요.</small></span></label><label class="setting-option"><input type="radio" name="sensitivity" value="high" /><span><strong>예민함</strong><small>습기와 바람에 쉽게 무너져요.</small></span></label><button id="saveSettingsButton" class="primary-button dialog-save" value="default">저장하기</button></form></dialog>
+  <script src="/logic.js" defer></script><script src="/app.js" defer></script>
+</body>
+</html>
