@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const{getKakaoJavaScriptKey}=require('../api/config.js');
+test('Kakao map config accepts the existing public-housing-guide variable names',()=>{assert.equal(getKakaoJavaScriptKey({NEXT_PUBLIC_KA_KAO_MAP_CLIENT_KEY:'legacy-a'}),'legacy-a');assert.equal(getKakaoJavaScriptKey({NEXT_PUBLIC_KAKAO_MAP_CLIENT_KEY:'legacy-b'}),'legacy-b');});
+test('dedicated bangs-survival Kakao key has precedence',()=>{assert.equal(getKakaoJavaScriptKey({KAKAO_JAVASCRIPT_KEY:'preferred',NEXT_PUBLIC_KAKAO_MAP_CLIENT_KEY:'legacy'}),'preferred');});
+test('unrelated REST/Admin-style variables are never treated as the Maps JavaScript key',()=>{assert.equal(getKakaoJavaScriptKey({KAKAO_REST_API_KEY:'do-not-expose',KAKAO_ADMIN_KEY:'do-not-expose'}),'');});
