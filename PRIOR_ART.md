@@ -52,6 +52,40 @@
 - 모발의 인장 특성이 상대습도와 온도에 유의하게 의존함을 보고합니다.
 - PubMed: https://pubmed.ncbi.nlm.nih.gov/28183593/
 
+### Gao, 2007 — Evaluation of hair humidity resistance/moisturization from hair elasticity
+
+- 40–85% RH 범위에서 모발의 water regain이 RH 증가와 함께 커졌고, 50–80% RH 범위에서 elasticity가 감소했습니다.
+- Polyquaternium 계열 shampoo formulation 사이에서도 anti-frizz humidity resistance 차이가 관찰됐습니다.
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/17728940/
+
+### Jachowicz & Yao, 2001 — Dynamic hairspray analysis II
+
+- hairspray resin의 stiffness retention at high humidity를 측정했고, polymer 종류·분자량·첨가제·water content·hair type에 따라 성능이 달라졌습니다.
+- 따라서 `습한 날에는 스프레이를 무조건 더 많이 뿌린다`보다 고습도 유지력을 고려한 formulation을 선택하는 방향이 연구와 더 정합적입니다.
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/11567208/
+
+### Rafferty et al., 2008 / 2009 — Styling polymer와 고습도 유지력
+
+- styling gel polymer의 adhesion/cohesion과 high-humidity curl retention이 formulation에 따라 달라졌습니다.
+- 다른 연구에서는 RH 50%와 90%에서 polymer charge density에 따른 stiffness 관계가 역전될 수 있고, 고습도에서 수분이 polymer를 plasticize할 수 있다고 설명합니다.
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/19156332/
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/19450424/
+
+### Zhou et al., 2011 / 열 styling 연구
+
+- 200℃를 넘는 flat iron은 hair keratin에 유의한 열손상을 줄 수 있고 반복 thermal stress는 breakage를 증가시킬 수 있습니다. 일부 polymer pretreatment는 손상을 줄였습니다.
+- 별도 연구에서는 water 또는 wet heat-protection spray 조건에서 microscopy/tensile 기준 구조 손상이 더 크게 관찰되어, 젖은 상태에서 반복적으로 열을 가하는 것을 피할 근거가 됩니다.
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/21635854/
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/21443842/
+
+### Hair cosmetics / friction review
+
+- conditioner는 inter-fiber friction과 combing force를 줄이고 combability를 개선하는 용도로 사용됩니다.
+- 2025 friction review는 chemical/thermal/mechanical weathering이 hair surface 18-MEA loss와 friction 증가를 가속할 수 있으며 conditioner formulation이 friction을 낮출 수 있다고 정리합니다.
+- 직모 앞머리에는 leave-on product를 뿌리 가까이에 과도하게 사용하면 무겁고 번들거려 보일 수 있다는 review 설명도 있어, 앱 조언에서는 `필요하면 길이 위주로 소량`처럼 보수적으로 표현합니다.
+- PMC: https://pmc.ncbi.nlm.nih.gov/articles/PMC4387693/
+- PubMed: https://pubmed.ncbi.nlm.nih.gov/40782659/
+
 ### 현재 해석
 
 - 습도/이슬점을 위험 변수로 사용하는 것은 선행 연구와 일치합니다.
@@ -121,10 +155,11 @@
 ### 현재 Build 결정
 
 - **메인 캐릭터:** 프로젝트 고정 여성 캐릭터를 로컬 inline SVG로 유지합니다. 큰 눈/볼/리본 같은 장식보다 더 중요한 요구사항은 동일 인물이 생존점수에 따라 `표정 + 앞머리 변형`을 일관되게 보여주는 것입니다.
-- **일일 요정:** 비/바람/고습/좋은 날/애매한 날 5종을 `fairies.js`의 작은 deterministic SVG generator로 렌더링합니다.
-- **도감:** localStorage의 이미 존재하는 일일 companion 기록에서 `key`만 읽어 종류별 발견 여부를 표시합니다. 서버 DB를 추가하지 않습니다.
-- **네트워크:** 캐릭터 때문에 DiceBear/CDN 등 외부 이미지 요청을 만들지 않습니다.
-- **확장:** 종류가 10~20종 이상으로 늘어나 직접 SVG 유지비가 커질 때 React Kawaii 또는 Fluent Emoji 같은 기존 MIT 자산을 다시 평가합니다.
+- **요정 뽑기:** 12종을 `gacha.js`의 작은 SVG generator로 렌더링하고 사용자가 하루 한 번 헤어롤을 눌러 랜덤으로 뽑습니다. 날씨 affinity는 확률 weight만 완만하게 조정합니다.
+- **도감:** 별도 `bangs-fairy-gacha-v1` localStorage에 최대 120일 뽑기 결과만 저장하고 종류별 발견 여부를 표시합니다. 서버 DB를 추가하지 않습니다.
+- **헤어롤 prior art:** SVG Repo `Hair Rollers`는 CC0입니다. https://www.svgrepo.com/svg/9646/hair-rollers . 원본 전체 자산을 런타임에 넣지 않고 형태만 참고해 작은 로컬 SVG로 다시 구성합니다.
+- **네트워크:** 캐릭터와 헤어롤 때문에 DiceBear/CDN 등 외부 이미지 요청을 만들지 않습니다.
+- **확장:** 캐릭터 수가 더 커져 직접 SVG 유지비가 높아질 때 React Kawaii 또는 Fluent Emoji 같은 기존 MIT 자산을 다시 평가합니다.
 
 ## Kawaii 관련 연구와 해석
 
@@ -155,17 +190,21 @@ Gamification 연구의 이론적 기반을 종합한 systematic review는 goal v
 
 **Build**
 
-- 예보를 확인하면 하루 한 번 자동으로 만나는 `오늘의 앞머리 요정`
-- 실제 날씨 유형으로 결정되는 5종
+- 사용자가 헤어롤을 눌러 실행하는 하루 1회 무료 랜덤 뽑기
+- 12종과 `일반 / 희귀 / 반짝` 희귀도
+- 실제 날씨와 affinity가 맞으면 해당 요정의 weight만 1.8배로 높이는 약한 날씨 연동
+- 한 번 뽑은 날짜는 결과를 고정하여 재뽑기할 수 없음
 - 만난 종류를 보여주는 작은 도감
-- 같은 날짜에는 같은 결과를 유지하고 localStorage에 최대 60일 보관
 - 빠진 날에 패널티 없음
+- 예보 확인 시 123종의 짧은 응원 문구 중 하나를 독립적으로 랜덤 노출
 
 **Don't Build now**
 
-- 재화, 유료 뽑기, 반복 reroll, 확률형 희귀도
+- 재화, 유료 뽑기, 광고를 본 뒤 재뽑기, 반복 reroll
 - 접속하지 않으면 끊기는 punitive streak
 - 날씨/앞머리 경험과 무관한 별도 미니게임
+
+랜덤성은 `결제나 손실을 유도하는 가챠`가 아니라 하루 한 번의 가벼운 surprise 요소로 한정합니다. 브라우저 지원 시 `crypto.getRandomValues`를 사용합니다.
 
 ## 한국 정밀 예보
 
