@@ -10,7 +10,7 @@
   background: radial-gradient(circle at 50% 36%, #fff 0 22%, #fff1f7 55%, #ffe8f1 100%);
 }
 .mascot-svg { width: 146px; height: 146px; overflow: visible; }
-.mascot-hair-back, .mascot-bang, .mascot-side-hair { fill: #49353f; }
+.mascot-hair-back, .mascot-fringe-base, .mascot-bang, .mascot-side-hair { fill: #49353f; }
 .mascot-neck { fill: #ffd7e3; }
 .mascot-shirt { fill: #f9c4d8; }
 .mascot-face-shape { fill: #ffe2ea; stroke: #efaac0; stroke-width: 2; }
@@ -31,8 +31,8 @@
 .mascot[data-mood=worried] .mascot-bang-left { transform: rotate(-4deg) translate(-2px, 5px); }
 .mascot[data-mood=worried] .mascot-bang-right { transform: rotate(8deg) translate(3px, 6px); }
 .mascot[data-mood=worried] .mascot-sweat { opacity: .8; }
-.mascot[data-mood=doomed] .mascot-bang-left { transform: rotate(-9deg) translate(-4px, 11px); }
-.mascot[data-mood=doomed] .mascot-bang-right { transform: rotate(13deg) translate(5px, 12px); }
+.mascot[data-mood=doomed] .mascot-bang-left { transform: rotate(-7deg) translate(-3px, 9px); }
+.mascot[data-mood=doomed] .mascot-bang-right { transform: rotate(11deg) translate(4px, 10px); }
 .mascot[data-mood=doomed] .mascot-sweat { opacity: 1; }
 
 .companion-art.fairy-host { display: grid; place-items: center; overflow: hidden; padding: 7px; }
