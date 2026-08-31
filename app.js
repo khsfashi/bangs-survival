@@ -2,6 +2,7 @@
 'use strict';
 
 const OPEN_METEO_URL = 'https://api.open-meteo.com/v1/forecast';
+const DICEBEAR_API_BASE = 'https://api.dicebear.com/10.x';
 const STORAGE_KEY = 'bangs-survival-v1';
 const SEOUL = { latitude: 37.5665, longitude: 126.9780, label: '서울특별시 중구', source: 'demo' };
 const GOOD_ACCURACY_METERS = 80;
@@ -47,8 +48,15 @@ const el = {
   verdictDescription: document.querySelector('#verdictDescription'),
   reasonChips: document.querySelector('#reasonChips'),
   mascot: document.querySelector('#mascot'),
+  mascotImage: document.querySelector('#mascotImage'),
   mascotStatus: document.querySelector('#mascotStatus'),
   adviceList: document.querySelector('#adviceList'),
+  companionCard: document.querySelector('#companionCard'),
+  companionImage: document.querySelector('#companionImage'),
+  companionBadge: document.querySelector('#companionBadge'),
+  companionName: document.querySelector('#companionName'),
+  companionMessage: document.querySelector('#companionMessage'),
+  companionCount: document.querySelector('#companionCount'),
   bestWindowTitle: document.querySelector('#bestWindowTitle'),
   bestWindowDescription: document.querySelector('#bestWindowDescription'),
   timeline: document.querySelector('#timeline'),
@@ -74,8 +82,16 @@ function init() {
   el.settingsButton?.addEventListener('click', openSettings);
   el.saveSettingsButton?.addEventListener('click', saveSettingsFromDialog);
   document.querySelectorAll('[data-feedback]').forEach((button) => button.addEventListener('click', () => saveFeedback(button.dataset.feedback)));
+  setupRemoteImageFallback(el.mascotImage);
+  setupRemoteImageFallback(el.companionImage);
   renderSavedLocationShortcut();
   if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+}
+
+function setupRemoteImageFallback(image) {
+  if (!image) return;
+  image.addEventListener('error', () => image.closest('.remote-art')?.classList.add('asset-failed'));
+  image.addEventListener('load', () => image.closest('.remote-art')?.classList.remove('asset-failed'));
 }
 
 function requestCurrentLocation() {
@@ -353,7 +369,12 @@ function renderForecast(forecast) {
   showOnly('forecast');
   const current = forecast.current;
   const verdict = logic.getVerdict(current.score);
-  const advice = logic.getBangsAdvice(current.score, current.metrics);
+  const advice = logic.getBangsAdvice(current.score, current.metrics, {
+    hours: forecast.hours,
+    best: forecast.best,
+    calibration: forecast.calibration,
+    feedbackCount: state.settings.feedback.length
+  });
 
   el.locationLabel.textContent = forecast.label || '선택한 위치';
   el.updatedLabel.textContent = `${formatTime(forecast.generatedAt)} 기준`;
@@ -367,7 +388,7 @@ function renderForecast(forecast) {
   el.verdictTitle.textContent = verdict.title;
   el.verdictDescription.textContent = verdict.description;
   el.mascot.dataset.mood = verdict.key;
-  el.mascotStatus.textContent = ({ great: '오늘 나 꽤 멀쩡해!', okay: '고정력만 조금 빌려줘.', worried: '습기가 수상한데…', doomed: '오늘은 나를 놓아줘…' })[verdict.key];
+  el.mascotStatus.textContent = ({ great: '오늘은 리본도 안심이에요.', okay: '작은 빗 하나만 챙겨줘요.', worried: '습기랑 바람을 같이 볼게요.', doomed: '오늘은 편한 스타일도 괜찮아요.' })[verdict.key];
   el.reasonChips.replaceChildren(...getReasons(current.metrics).map((reason) => {
     const chip = document.createElement('span');
     chip.className = 'reason-chip';
@@ -384,6 +405,7 @@ function renderForecast(forecast) {
     item.append(title, description);
     return item;
   }));
+  renderDailyCompanion(forecast);
   const bestDate = new Date(forecast.best.time);
   el.bestWindowTitle.textContent = `${formatHour(bestDate)} 전후가 가장 안전해요`;
   el.bestWindowDescription.textContent = `예상 생존점수 ${forecast.best.score}점입니다. 외출 시간을 조절할 수 있다면 이 시간대가 앞으로 12시간 중 가장 유리합니다.`;
@@ -402,6 +424,30 @@ function renderForecast(forecast) {
   } else {
     el.editLocationButton.textContent = '지도에서 위치 조정';
   }
+}
+
+function renderDailyCompanion(forecast) {
+  if (!el.companionCard || !logic.createDailyCompanion) return;
+  const day = logic.feedbackDayKey(forecast.current.time);
+  let companion = logic.getCollectedCompanion(state.settings.companions, day);
+  const isNew = !companion;
+  if (!companion) {
+    companion = logic.createDailyCompanion(day, forecast.current.metrics, forecast.current.score);
+    state.settings.companions = logic.upsertDailyCompanion(state.settings.companions, companion, 60);
+    persistSettings();
+  }
+
+  el.companionBadge.textContent = isNew ? '오늘 처음 만남' : '오늘의 친구';
+  el.companionName.textContent = companion.name;
+  el.companionMessage.textContent = companion.message;
+  el.companionCount.textContent = `지금까지 ${state.settings.companions.length}마리를 만났어요. 빠진 날이 있어도 연속 기록은 끊기지 않아요.`;
+  if (el.companionImage) {
+    const seed = encodeURIComponent(companion.seed);
+    const nextSrc = `${DICEBEAR_API_BASE}/critters/svg?seed=${seed}`;
+    if (el.companionImage.src !== nextSrc) el.companionImage.src = nextSrc;
+    el.companionImage.alt = companion.name;
+  }
+  el.companionCard.dataset.kind = companion.key;
 }
 
 function buildLocationMeta(grid, position) {
@@ -576,13 +622,17 @@ function loadSettings() {
       ? parsed.feedback.map(logic?.normalizeFeedbackSample || ((sample) => sample)).filter(Boolean).slice(-30)
       : [];
     const savedLocation = logic?.normalizeSavedLocation ? logic.normalizeSavedLocation(parsed.savedLocation) : null;
+    const companions = Array.isArray(parsed.companions) && logic?.normalizeDailyCompanion
+      ? parsed.companions.map(logic.normalizeDailyCompanion).filter(Boolean).slice(-60)
+      : [];
     return {
       sensitivity: ['low', 'normal', 'high'].includes(parsed.sensitivity) ? parsed.sensitivity : 'normal',
       feedback,
-      savedLocation
+      savedLocation,
+      companions
     };
   } catch {
-    return { sensitivity: 'normal', feedback: [], savedLocation: null };
+    return { sensitivity: 'normal', feedback: [], savedLocation: null, companions: [] };
   }
 }
 
