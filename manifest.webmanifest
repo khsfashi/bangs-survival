@@ -1,1 +1,11 @@
-{"name":"앞머리 생존예보","short_name":"앞머리예보","description":"습도, 이슬점, 비, 바람으로 오늘 앞머리 생존 가능성을 확인합니다.","start_url":"/","display":"standalone","background_color":"#fff8fb","theme_color":"#fff8fb","lang":"ko-KR","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "name":"앞머리 생존예보",
+  "short_name":"앞머리예보",
+  "description":"내 동네 날씨로 오늘 앞머리 생존 가능성과 행동 조언을 확인합니다.",
+  "start_url":"/",
+  "display":"standalone",
+  "background_color":"#fff8fb",
+  "theme_color":"#fff8fb",
+  "lang":"ko-KR",
+  "icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
