@@ -6,7 +6,7 @@ const path = require('node:path');
 const css = fs.readFileSync(path.join(__dirname, '..', 'delight.css'), 'utf8');
 
 test('generated fairy artwork is inset and clipped inside its visual hosts', () => {
-  assert.match(css, /\.fairy-svg \.fairy-artwork\s*\{[\s\S]*transform:\s*scale\(\.9\)/);
+  assert.match(css, /\.fairy-svg \.fairy-artwork\s*\{[\s\S]*transform:\s*scale\(\.86\)/);
   assert.match(css, /\.companion-art\.fairy-host,[\s\S]*\.fairy-book-art,[\s\S]*\.fairy-detail-art\s*\{[\s\S]*overflow:\s*hidden/);
   assert.match(css, /\.fairy-svg,[\s\S]*\.hair-roller-svg,[\s\S]*\.mascot-svg\s*\{[\s\S]*overflow:\s*hidden/);
 });
