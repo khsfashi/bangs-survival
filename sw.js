@@ -1,5 +1,5 @@
-const CACHE_NAME='bangs-survival-static-v6';
-const STATIC_ASSETS=['/','/index.html','/styles.css','/art.css','/delight.css','/logic.js','/map.js','/app.js','/fairies.js','/evidence.js','/encouragement.js','/gacha.js','/manifest.webmanifest','/icon.svg'];
+const CACHE_NAME='bangs-survival-static-v7';
+const STATIC_ASSETS=['/','/index.html','/styles.css','/art.css','/delight.css','/week.css','/logic.js','/horizon.js','/map.js','/app.js','/week.js','/fairies.js','/evidence.js','/encouragement.js','/gacha.js','/manifest.webmanifest','/icon.svg'];
 
 self.addEventListener('install',(event)=>{
   event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(STATIC_ASSETS)));
