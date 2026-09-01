@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/art.css" />
   <link rel="stylesheet" href="/delight.css" />
   <link rel="stylesheet" href="/week.css" />
+  <link rel="stylesheet" href="/ux-refresh.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -21,17 +22,17 @@
     </header>
 
     <section id="permissionCard" class="card permission-card">
-      <p class="card-kicker">내 동네 날씨로 계산해요</p>
+      <p class="card-kicker">내 동네 날씨로 10초 체크</p>
       <h2>오늘 앞머리, 해도 될까?</h2>
-      <p>현재 위치를 잡은 뒤 한국 동네예보 기준으로 계산합니다. 특히 PC에서는 브라우저 위치가 실제와 크게 다를 수 있어 처음 한 번 지도나 동네 검색으로 확인하는 것을 권장합니다.</p>
-      <button id="locationButton" class="primary-button" type="button">현재 위치로 확인하기</button>
-      <button id="demoButton" class="text-button" type="button">위치 없이 서울 예시 보기</button>
-      <p class="privacy-note">예보 조회 좌표는 서버 DB에 저장하지 않습니다. 지도에서 직접 확정한 최근 위치만 다음 사용을 위해 이 브라우저의 localStorage에 저장합니다.</p>
+      <p>현재 위치의 비·습도·바람을 보고 오늘 앞머리가 얼마나 버틸지 알려드려요. PC 위치는 가끔 크게 어긋날 수 있으니 처음 한 번만 지도로 확인해 주세요.</p>
+      <button id="locationButton" class="primary-button" type="button">내 위치로 바로 확인하기</button>
+      <button id="demoButton" class="text-button" type="button">일단 서울 예시로 보기</button>
+      <p class="privacy-note">위치는 날씨 조회에만 사용해요. 직접 확인한 최근 위치만 다음 방문을 위해 이 브라우저에 저장하며 서버 DB에는 저장하지 않습니다.</p>
     </section>
 
     <section id="loadingCard" class="card state-card hidden" aria-live="polite">
       <div class="spinner" aria-hidden="true"></div>
-      <p>동네 날씨를 읽고 앞머리 상태를 계산하는 중입니다.</p>
+      <p>동네 날씨를 읽고 앞머리 상태를 계산하고 있어요.</p>
     </section>
 
     <section id="errorCard" class="card state-card hidden" aria-live="assertive">
@@ -45,22 +46,22 @@
       <section class="card location-card">
         <div class="location-summary">
           <div>
-            <p class="card-kicker">현재 예보 기준점</p>
+            <p class="card-kicker">예보 위치</p>
             <h2 id="locationLabel">선택한 위치</h2>
             <p id="gridLabel" class="location-meta"></p>
           </div>
           <span id="sourceBadge" class="source-badge">예보 확인 중</span>
         </div>
-        <button id="editLocationButton" class="secondary-button compact-button" type="button">지도에서 위치 조정</button>
+        <button id="editLocationButton" class="secondary-button compact-button" type="button">위치 바꾸기</button>
         <div id="mapPanel" class="map-panel hidden">
           <div id="map" class="map-container" aria-label="예보 기준 위치를 조정하는 지도"></div>
           <p id="mapStatus" class="map-status">마커를 끌거나 지도를 눌러 위치를 바꾸세요.</p>
-          <button id="applyMapPositionButton" class="primary-button" type="button">이 위치로 다시 계산</button>
+          <button id="applyMapPositionButton" class="primary-button" type="button">이 위치로 다시 계산하기</button>
         </div>
       </section>
 
       <section class="hero-card card">
-        <div class="hero-topline"><span>앞머리 생존점수</span><span id="updatedLabel" class="updated-label"></span></div>
+        <div class="hero-topline"><span>오늘의 앞머리 생존점수</span><span id="updatedLabel" class="updated-label"></span></div>
         <div id="mascot" class="mascot" data-mood="great" aria-live="polite">
           <div class="mascot-art mascot-illustration">
             <svg class="mascot-svg" viewBox="0 0 180 170" role="img" aria-label="리본을 단 여성 앞머리 캐릭터">
@@ -114,9 +115,15 @@
         <div id="reasonChips" class="reason-chips"></div>
       </section>
 
+      <section class="card best-time-card">
+        <p class="card-kicker">지금 나가도 될까?</p>
+        <h2 id="bestWindowTitle">가장 편한 외출 시간</h2>
+        <p id="bestWindowDescription"></p>
+      </section>
+
       <section class="card advice-card">
-        <p class="card-kicker">오늘 날씨와 내 기록을 같이 봐요</p>
-        <h2>앞머리 행동 조언</h2>
+        <p class="card-kicker">딱 필요한 것만 알려드려요</p>
+        <h2>오늘 이렇게 해보세요</h2>
         <div id="adviceList" class="advice-list"></div>
       </section>
 
@@ -138,15 +145,9 @@
         </details>
       </section>
 
-      <section class="card best-time-card">
-        <p class="card-kicker">오늘의 추천</p>
-        <h2 id="bestWindowTitle">가장 안전한 외출 시간</h2>
-        <p id="bestWindowDescription"></p>
-      </section>
-
       <section class="card timeline-card">
         <div class="section-heading">
-          <div><p class="card-kicker">앞으로 12시간</p><h2>시간대별 생존도</h2></div>
+          <div><p class="card-kicker">오늘 시간대별</p><h2>언제 나가면 더 편할까?</h2></div>
           <span class="small-note">높을수록 안전</span>
         </div>
         <div id="timeline" class="timeline" role="list"></div>
@@ -154,12 +155,12 @@
 
       <section class="card week-card">
         <div class="section-heading">
-          <div><p class="card-kicker">날짜별 비교</p><h2>앞으로 최대 7일</h2></div>
+          <div><p class="card-kicker">이번 주 한눈에</p><h2>앞으로 최대 7일</h2></div>
           <span class="small-note">07–22시 기준</span>
         </div>
-        <p>며칠 중 언제 앞머리 세팅이 유리한지 비교합니다. 기상청 단기예보가 있는 날짜를 우선 사용하고, 그 범위를 넘는 날짜만 연장 전망으로 보완합니다.</p>
-        <button id="weekForecastButton" class="secondary-button" type="button">7일 전망 보기</button>
-        <p id="weekForecastStatus" class="week-status" aria-live="polite">필요할 때만 데이터를 추가로 불러옵니다.</p>
+        <p>며칠 중 언제 앞머리 세팅이 편한지 비교해 드려요. 필요한 경우에만 추가 예보를 불러옵니다.</p>
+        <button id="weekForecastButton" class="secondary-button" type="button">7일 전망 펼쳐보기</button>
+        <p id="weekForecastStatus" class="week-status" aria-live="polite">원할 때만 데이터를 더 불러와요.</p>
         <div id="weekForecastContent" class="hidden">
           <div id="weekDayTabs" class="week-days" role="tablist" aria-label="날짜별 앞머리 생존 전망"></div>
           <div id="weekDayDetail" class="week-detail" role="tabpanel"></div>
@@ -167,22 +168,27 @@
       </section>
 
       <section class="card feedback-card">
-        <p class="card-kicker">개인 보정</p>
-        <h2>실제로는 어땠나요?</h2>
-        <p>하루에 하나의 결과만 저장합니다. 같은 날 다시 누르면 새 기록이 아니라 오늘의 결과를 수정합니다.</p>
+        <p class="card-kicker">내 기록 반영</p>
+        <h2>오늘 실제로는 어땠나요?</h2>
+        <p>하루에 한 번만 알려주세요. 기록이 쌓이면 내 앞머리가 날씨에 얼마나 잘 버티는지 조금씩 반영해요.</p>
         <div class="feedback-buttons">
-          <button class="feedback-button" data-feedback="survived" type="button" aria-pressed="false">유지됨</button>
-          <button class="feedback-button" data-feedback="shaky" type="button" aria-pressed="false">조금 무너짐</button>
-          <button class="feedback-button" data-feedback="failed" type="button" aria-pressed="false">망함</button>
+          <button class="feedback-button" data-feedback="survived" type="button" aria-pressed="false">잘 버텼어요</button>
+          <button class="feedback-button" data-feedback="shaky" type="button" aria-pressed="false">조금 흐트러졌어요</button>
+          <button class="feedback-button" data-feedback="failed" type="button" aria-pressed="false">많이 무너졌어요</button>
         </div>
         <p id="feedbackStatus" class="feedback-status"></p>
       </section>
 
       <footer class="footer-note">
-        <p>이 점수는 날씨 기반 휴리스틱이며 결과를 보장하지 않습니다.</p>
-        <p>날씨 데이터: <span id="dataSourceLabel">확인 중</span></p>
-        <p>7일 비교에서 기상청 단기예보 범위를 넘는 날짜는 Open-Meteo 연장 전망으로 표시합니다.</p>
-        <p>캐릭터는 로컬 SVG로 렌더링하며 외부 이미지 요청을 하지 않습니다. 관련 오픈소스와 디자인 prior art는 PRIOR_ART.md에 기록합니다.</p>
+        <details class="footer-details">
+          <summary>예보 기준과 데이터 안내</summary>
+          <div class="footer-detail-body">
+            <p>이 점수는 날씨를 바탕으로 계산한 참고값이며 결과를 보장하지 않습니다.</p>
+            <p>날씨 데이터: <span id="dataSourceLabel">확인 중</span></p>
+            <p>7일 비교에서 기상청 단기예보 범위를 넘는 날짜는 Open-Meteo 연장 전망으로 표시합니다.</p>
+            <p>캐릭터와 요정은 로컬 SVG로 그리며 외부 이미지 요청을 하지 않습니다.</p>
+          </div>
+        </details>
       </footer>
     </div>
   </main>
@@ -190,13 +196,13 @@
   <dialog id="settingsDialog" class="settings-dialog">
     <form method="dialog">
       <div class="dialog-heading">
-        <div><p class="card-kicker">설정</p><h2>내 앞머리 민감도</h2></div>
+        <div><p class="card-kicker">설정</p><h2>앞머리가 날씨에 얼마나 예민한가요?</h2></div>
         <button class="icon-button" value="cancel" aria-label="닫기">×</button>
       </div>
-      <p>처음에는 기본값으로 시작하고, 실제 결과 피드백이 쌓이면 자동 보정됩니다.</p>
-      <label class="setting-option"><input type="radio" name="sensitivity" value="low"/><span><strong>튼튼함</strong><small>습기에 비교적 잘 버텨요.</small></span></label>
-      <label class="setting-option"><input type="radio" name="sensitivity" value="normal"/><span><strong>보통</strong><small>일반적인 기준으로 계산해요.</small></span></label>
-      <label class="setting-option"><input type="radio" name="sensitivity" value="high"/><span><strong>예민함</strong><small>습기와 바람에 쉽게 무너져요.</small></span></label>
+      <p>처음에는 대략 골라도 괜찮아요. 실제 결과를 남기면 앱이 조금씩 내 기록을 반영합니다.</p>
+      <label class="setting-option"><input type="radio" name="sensitivity" value="low"/><span><strong>잘 버텨요</strong><small>습기나 바람에도 비교적 오래 유지돼요.</small></span></label>
+      <label class="setting-option"><input type="radio" name="sensitivity" value="normal"/><span><strong>보통이에요</strong><small>일반적인 기준으로 계산해요.</small></span></label>
+      <label class="setting-option"><input type="radio" name="sensitivity" value="high"/><span><strong>쉽게 흐트러져요</strong><small>습기와 바람의 영향을 많이 받아요.</small></span></label>
       <button id="saveSettingsButton" class="primary-button dialog-save" value="default">저장하기</button>
     </form>
   </dialog>
@@ -210,5 +216,6 @@
   <script src="/evidence.js" defer></script>
   <script src="/encouragement.js" defer></script>
   <script src="/gacha.js" defer></script>
+  <script src="/fairy-details.js" defer></script>
 </body>
 </html>
