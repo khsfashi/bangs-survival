@@ -18,25 +18,35 @@
   ];
 
   const DEFINITIONS = Object.freeze({
-    drop: { name: '톡톡방울 요정', rarity: 'common', affinities: ['rain'], body: '#8bcaf2', accent: '#4f78b8', message: '빗방울이 와도 너무 낙담하지 말아요. 오늘은 우산과 함께 천천히 가요.', shape: 'drop' },
-    breeze: { name: '살랑바람 요정', rarity: 'common', affinities: ['wind'], body: '#a8e1d4', accent: '#558f8a', message: '바람이 장난치는 날이에요. 이동할 때만 핀으로 살짝 지켜줘요.', shape: 'bunny' },
-    puff: { name: '보송솜 요정', rarity: 'common', affinities: ['humid'], body: '#dcc3ee', accent: '#9571ad', message: '습기가 많은 날에는 완벽함보다 보송함을 지키는 쪽이 이득이에요.', shape: 'puff' },
-    sunny: { name: '햇살리본 요정', rarity: 'common', affinities: ['clear'], body: '#ffd77a', accent: '#df8c77', message: '오늘은 앞머리가 비교적 편안한 날이에요. 가볍게 세팅하고 나가요.', shape: 'sun' },
-    cloudy: { name: '구름빗 요정', rarity: 'common', affinities: ['cloud'], body: '#c9c7ed', accent: '#7773aa', message: '애매한 날에는 작은 빗 하나만 챙겨도 마음이 꽤 든든해져요.', shape: 'cloud' },
-    roller: { name: '몽글롤 요정', rarity: 'common', affinities: ['clear', 'cloud'], body: '#f4b6cf', accent: '#c95c86', message: '헤어롤 속에서 제일 먼저 나온 친구예요. 오늘의 볼륨을 가볍게 응원해요.', shape: 'roller' },
-    dew: { name: '새벽이슬 요정', rarity: 'rare', affinities: ['humid', 'rain'], body: '#a8d8f0', accent: '#597fa5', message: '이슬이 많은 날에는 수분 변화를 먼저 봐요. 조급하게 고데기를 덧대지 않아도 괜찮아요.', shape: 'drop' },
-    peach: { name: '복숭아솜 요정', rarity: 'rare', affinities: ['cloud', 'humid'], body: '#ffc1c9', accent: '#d66f80', message: '오늘은 부드럽게 정돈하는 날이에요. 손으로 자꾸 만지는 횟수만 줄여도 좋아요.', shape: 'puff' },
-    moon: { name: '달빛핀 요정', rarity: 'rare', affinities: ['wind', 'cloud'], body: '#b9b7e8', accent: '#6e6ca6', message: '긴 외출이라면 작은 핀 하나가 큰 도움이 돼요. 필요할 때만 꺼내 쓰면 돼요.', shape: 'moon' },
-    ribbon: { name: '리본바람 요정', rarity: 'rare', affinities: ['wind', 'clear'], body: '#f8aec8', accent: '#c65380', message: '바람이 있어도 예쁘게 다녀올 수 있어요. 세팅보다 이동 중 보호가 더 중요할 수 있어요.', shape: 'ribbon' },
-    rainbow: { name: '무지개롤 요정', rarity: 'special', affinities: ['rain', 'clear'], body: '#ffe59a', accent: '#bd6f9e', message: '비와 햇빛이 같이 오는 날에 잘 나타나는 특별한 친구예요. 오늘도 기분 좋은 일 하나는 생길 거예요.', shape: 'rainbow' },
-    stardust: { name: '별가루빗 요정', rarity: 'special', affinities: ['humid', 'wind', 'cloud'], body: '#d5c5f2', accent: '#8066b0', message: '조금 까다로운 날씨를 견디고 나온 특별한 친구예요. 완벽하지 않아도 충분히 예뻐요.', shape: 'star' }
+    drop: { name: '톡톡방울 요정', rarity: 'common', affinities: ['rain'], body: '#8bcaf2', accent: '#4f78b8', message: '빗방울이 와도 너무 낙담하지 말아요. 오늘은 우산과 함께 천천히 가요.', shape: 'drop', symbol: '💧' },
+    breeze: { name: '살랑바람 요정', rarity: 'common', affinities: ['wind'], body: '#a8e1d4', accent: '#558f8a', message: '바람이 장난치는 날이에요. 이동할 때만 핀으로 살짝 지켜줘요.', shape: 'bunny', symbol: '🍃' },
+    puff: { name: '보송솜 요정', rarity: 'common', affinities: ['humid'], body: '#dcc3ee', accent: '#9571ad', message: '습기가 많은 날에는 완벽함보다 보송함을 지키는 쪽이 이득이에요.', shape: 'puff', symbol: '☁️' },
+    sunny: { name: '햇살리본 요정', rarity: 'common', affinities: ['clear'], body: '#ffd77a', accent: '#df8c77', message: '오늘은 앞머리가 비교적 편안한 날이에요. 가볍게 세팅하고 나가요.', shape: 'sun', symbol: '☀️' },
+    cloudy: { name: '구름빗 요정', rarity: 'common', affinities: ['cloud'], body: '#c9c7ed', accent: '#7773aa', message: '애매한 날에는 작은 빗 하나만 챙겨도 마음이 꽤 든든해져요.', shape: 'cloud', symbol: '☁️' },
+    roller: { name: '몽글롤 요정', rarity: 'common', affinities: ['clear', 'cloud'], body: '#f4b6cf', accent: '#c95c86', message: '헤어롤 속에서 제일 먼저 나온 친구예요. 오늘의 볼륨을 가볍게 응원해요.', shape: 'roller', symbol: '🎀' },
+    dew: { name: '새벽이슬 요정', rarity: 'rare', affinities: ['humid', 'rain'], body: '#a8d8f0', accent: '#597fa5', message: '이슬이 많은 날에는 수분 변화를 먼저 봐요. 조급하게 고데기를 덧대지 않아도 괜찮아요.', shape: 'drop', symbol: '✨' },
+    peach: { name: '복숭아솜 요정', rarity: 'rare', affinities: ['cloud', 'humid'], body: '#ffc1c9', accent: '#d66f80', message: '오늘은 부드럽게 정돈하는 날이에요. 손으로 자꾸 만지는 횟수만 줄여도 좋아요.', shape: 'puff', symbol: '🍑' },
+    moon: { name: '달빛핀 요정', rarity: 'rare', affinities: ['wind', 'cloud'], body: '#b9b7e8', accent: '#6e6ca6', message: '긴 외출이라면 작은 핀 하나가 큰 도움이 돼요. 필요할 때만 꺼내 쓰면 돼요.', shape: 'moon', symbol: '🌙' },
+    ribbon: { name: '리본바람 요정', rarity: 'rare', affinities: ['wind', 'clear'], body: '#f8aec8', accent: '#c65380', message: '바람이 있어도 예쁘게 다녀올 수 있어요. 세팅보다 이동 중 보호가 더 중요할 수 있어요.', shape: 'ribbon', symbol: '🎀' },
+    rainbow: { name: '무지개롤 요정', rarity: 'special', affinities: ['rain', 'clear'], body: '#ffe59a', accent: '#bd6f9e', message: '비와 햇빛이 같이 오는 날에 잘 나타나는 특별한 친구예요. 오늘도 기분 좋은 일 하나는 생길 거예요.', shape: 'rainbow', symbol: '🌈' },
+    stardust: { name: '별가루빗 요정', rarity: 'special', affinities: ['humid', 'wind', 'cloud'], body: '#d5c5f2', accent: '#8066b0', message: '조금 까다로운 날씨를 견디고 나온 특별한 친구예요. 완벽하지 않아도 충분히 예뻐요.', shape: 'star', symbol: '⭐' }
   });
 
-  const RARITY_LABEL = Object.freeze({ common: '일반', rare: '희귀', special: '반짝' });
+  const RARITY_META = Object.freeze({
+    common: Object.freeze({ label: '일반', stars: '★', hint: '자주 만나요' }),
+    rare: Object.freeze({ label: '희귀', stars: '★★', hint: '가끔 만나요' }),
+    special: Object.freeze({ label: '반짝', stars: '★★★', hint: '아주 드물게 만나요' })
+  });
+  const RARITY_LABEL = Object.freeze(Object.fromEntries(Object.entries(RARITY_META).map(([key, meta]) => [key, meta.label])));
   const BASE_WEIGHTS = Object.freeze({ common: 10, rare: 4, special: 3 });
 
   function definitionFor(key) { return DEFINITIONS[key] || DEFINITIONS.cloudy; }
-  function rarityLabel(rarity) { return RARITY_LABEL[rarity] || RARITY_LABEL.common; }
+  function rarityMeta(rarity) { return RARITY_META[rarity] || RARITY_META.common; }
+  function rarityLabel(rarity) { return rarityMeta(rarity).label; }
+  function rarityPresentation(rarity, includeHint = true) {
+    const meta = rarityMeta(rarity);
+    return `${meta.stars} ${meta.label}${includeHint ? ` · ${meta.hint}` : ''}`;
+  }
 
   function clampRandom(value) {
     const number = Number(value);
@@ -132,6 +142,10 @@
   }
 
   function unlockedKeys(state) { return new Set((state?.draws || []).map((entry) => entry.key).filter((key) => ORDER.includes(key))); }
+  function isFirstDiscovery(state, key) { return ORDER.includes(key) && !unlockedKeys(state).has(key); }
+  function shouldCelebrate(draw) {
+    return draw?.firstDiscovery === true && definitionFor(draw.key).rarity !== 'common';
+  }
 
   function createBook(document, card) {
     let book = card.querySelector('#fairyGachaBook');
@@ -157,8 +171,9 @@
       const definition = DEFINITIONS[key];
       const found = unlocked.has(key);
       const item = document.createElement('article');
-      item.className = `fairy-book-item${found ? ' is-unlocked' : ' is-locked'}`;
-      item.innerHTML = `<div class="fairy-book-art">${getFairySvg(key, { locked: !found })}</div><strong>${found ? definition.name : '??? 요정'}</strong><span>${found ? rarityLabel(definition.rarity) : '아직 비밀'}</span>`;
+      item.className = `fairy-book-item${found ? ' is-unlocked' : ' is-locked'} rarity-${definition.rarity}`;
+      item.dataset.rarity = definition.rarity;
+      item.innerHTML = `<div class="fairy-book-art">${getFairySvg(key, { locked: !found })}</div><strong>${found ? definition.name : '??? 요정'}</strong><span class="fairy-book-rarity">${found ? rarityPresentation(definition.rarity, false) : '아직 비밀'}</span>`;
       return item;
     }));
   }
@@ -176,6 +191,23 @@
     const countText = document.querySelector('#companionCount');
     if (!card || !host || !name || !message || !badge) return;
 
+    let newBadge = card.querySelector('#fairyNewBadge');
+    if (!newBadge) {
+      newBadge = document.createElement('span');
+      newBadge.id = 'fairyNewBadge';
+      newBadge.className = 'fairy-new-badge hidden';
+      newBadge.textContent = 'NEW!';
+      badge.insertAdjacentElement('afterend', newBadge);
+    }
+
+    let quoteLabel = card.querySelector('#fairyQuoteLabel');
+    if (!quoteLabel) {
+      quoteLabel = document.createElement('p');
+      quoteLabel.id = 'fairyQuoteLabel';
+      quoteLabel.className = 'fairy-quote-label hidden';
+      message.insertAdjacentElement('beforebegin', quoteLabel);
+    }
+
     let action = card.querySelector('#fairyGachaAction');
     if (!action) {
       action = document.createElement('div');
@@ -185,6 +217,7 @@
       card.querySelector('.companion-copy')?.insertAdjacentElement('afterend', action);
     }
     const button = action.querySelector('#fairyGachaButton');
+    const rule = action.querySelector('.fairy-gacha-rule');
     let drawing = false;
 
     const sync = () => {
@@ -193,29 +226,43 @@
       const state = readState(storage);
       const today = dayKey();
       const draw = getDrawForDay(state, today);
+      const unlocked = unlockedKeys(state);
       renderBook(document, state, card);
 
       if (!draw) {
         card.dataset.gachaState = 'ready';
+        delete card.dataset.rarity;
+        delete card.dataset.fairyKey;
+        newBadge.classList.add('hidden');
+        quoteLabel.classList.add('hidden');
         setText(badge, '오늘 1회 무료');
         setText(name, '오늘의 앞머리 요정 뽑기');
         setText(message, '핑크 헤어롤을 굴리면 오늘 함께할 요정이 뿅 하고 나와요.');
         host.innerHTML = getHairRollerSvg();
         button.disabled = false;
         setText(button, '헤어롤 굴려서 요정 뽑기');
-        setText(countText, `도감은 ${unlockedKeys(state).size}/${ORDER.length}종 열렸어요.`);
+        setText(rule, '하루 1회 무료 · 재뽑기 없음');
+        setText(countText, `도감은 ${unlocked.size}/${ORDER.length}종 열렸어요.`);
         return;
       }
 
       const definition = definitionFor(draw.key);
+      const rarity = draw.rarity || definition.rarity;
+      const firstRareDiscovery = draw.firstDiscovery === true && rarity !== 'common';
       card.dataset.gachaState = 'revealed';
-      setText(badge, `${rarityLabel(definition.rarity)} · 오늘의 요정`);
+      card.dataset.rarity = rarity;
+      card.dataset.fairyKey = draw.key;
+      setText(badge, rarityPresentation(rarity));
+      newBadge.classList.toggle('hidden', !firstRareDiscovery);
+      quoteLabel.classList.remove('hidden');
+      setText(quoteLabel, `${definition.name}의 한마디`);
       setText(name, definition.name);
       setText(message, definition.message);
       host.innerHTML = getFairySvg(draw.key);
       button.disabled = true;
       setText(button, '오늘의 요정을 만났어요');
-      setText(countText, `지금까지 ${state.draws.length}번 뽑았고, 도감은 ${unlockedKeys(state).size}/${ORDER.length}종 열렸어요.`);
+      setText(rule, '하루 1회 · 다음 요정은 내일');
+      setText(countText, `오늘은 ${definition.name}과 함께해요 ${definition.symbol} · 도감 ${unlocked.size}/${ORDER.length} · 다음 친구는 내일 만날 수 있어요.`);
     };
 
     button.addEventListener('click', () => {
@@ -233,13 +280,15 @@
       const randomValue = secureRandom01(cryptoObject);
       const key = drawFairy(weatherKind, randomValue);
       const definition = definitionFor(key);
-      const next = upsertDraw(state, {
+      const draw = {
         day: today,
         key,
         rarity: definition.rarity,
         weatherKind,
-        drawnAt: new Date().toISOString()
-      });
+        drawnAt: new Date().toISOString(),
+        firstDiscovery: isFirstDiscovery(state, key)
+      };
+      const next = upsertDraw(state, draw);
       window.setTimeout(() => {
         writeState(storage, next);
         host.classList.remove('is-drawing');
@@ -247,6 +296,14 @@
         action.classList.remove('is-drawing');
         drawing = false;
         sync();
+        if (shouldCelebrate(draw)) {
+          host.classList.add('is-first-discovery');
+          card.classList.add('is-first-discovery');
+          window.setTimeout(() => {
+            host.classList.remove('is-first-discovery');
+            card.classList.remove('is-first-discovery');
+          }, 1200);
+        }
         window.setTimeout(() => host.classList.remove('is-pop'), 650);
       }, 900);
     });
@@ -265,7 +322,8 @@
   }
 
   return {
-    ORDER: ORDER.slice(), DEFINITIONS, RARITY_LABEL, drawFairy, getFairySvg, getHairRollerSvg,
-    readState, writeState, dayKey, getDrawForDay, upsertDraw, unlockedKeys, bind
+    ORDER: ORDER.slice(), DEFINITIONS, RARITY_META, RARITY_LABEL, rarityPresentation,
+    drawFairy, getFairySvg, getHairRollerSvg, readState, writeState, dayKey,
+    getDrawForDay, upsertDraw, unlockedKeys, isFirstDiscovery, shouldCelebrate, bind
   };
 }));
