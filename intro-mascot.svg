@@ -1,0 +1,42 @@
+<svg viewBox="0 0 150 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">앞머리 생존예보 리본 캐릭터</title>
+  <desc id="desc">검은 갈색 머리에 분홍 리본을 단 밝은 표정의 캐릭터</desc>
+  <defs>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9bc2"/>
+      <stop offset="1" stop-color="#f05b9a"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff78ae"/>
+      <stop offset="1" stop-color="#d93e82"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 2)">
+    <path d="M35 151c4-26 20-36 40-36s36 10 40 36Z" fill="url(#shirt)"/>
+    <path d="M62 112h26v24H62Z" fill="#ffd8e5"/>
+    <path d="M32 78C29 40 47 17 75 16c31-1 48 21 45 62l-2 53c-11 11-25 16-43 16-19 0-33-5-45-16Z" fill="#4b3642"/>
+    <ellipse cx="75" cy="79" rx="36" ry="42" fill="#ffe2ea" stroke="#efaac0" stroke-width="2"/>
+    <path d="M42 62c4-19 17-32 32-37 17-6 35-3 47 12 4 5 6 12 7 19-11-6-22-7-32-3-8 4-14 8-22 9-12 3-23 2-32 0Z" fill="#4b3642"/>
+    <path d="M36 73c3-28 22-46 48-46 1 21-8 36-31 49 2-13-1-25-8-33 0 12-3 22-9 30Z" fill="#4b3642"/>
+    <path d="M75 27c25-3 42 13 44 39-10-7-20-10-32-7 1 10-3 20-12 29-5-18-6-38 0-61Z" fill="#4b3642"/>
+    <path d="M36 69c-3 21 0 42 9 57l-11 8c-10-17-13-43-10-62Z" fill="#4b3642"/>
+    <path d="M116 67c5 22 3 43-6 59l12 7c9-18 11-44 6-64Z" fill="#4b3642"/>
+    <g transform="translate(116 40) rotate(14)">
+      <path d="M0 7C8-3 18-1 18 6c0 7-9 10-18 1Z" fill="url(#ribbon)"/>
+      <path d="M0 7C-8-3-18-1-18 6c0 7 9 10 18 1Z" fill="url(#ribbon)"/>
+      <circle cy="7" r="5" fill="#c53675"/>
+    </g>
+    <path d="M53 78q7 7 14 0M83 78q7 7 14 0" fill="none" stroke="#4b3642" stroke-width="4" stroke-linecap="round"/>
+    <path d="M62 101q13 14 26 0" fill="none" stroke="#d35482" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="49" cy="96" rx="6" ry="3" fill="#f49ab8" opacity=".55"/>
+    <ellipse cx="101" cy="96" rx="6" ry="3" fill="#f49ab8" opacity=".55"/>
+    <g fill="#fff">
+      <path d="M23 33l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/>
+      <path d="M124 88l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z"/>
+    </g>
+    <g fill="#fff4a7">
+      <path d="M119 18l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z"/>
+      <circle cx="25" cy="112" r="4"/>
+    </g>
+  </g>
+</svg>
