@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/delight.css" />
   <link rel="stylesheet" href="/week.css" />
   <link rel="stylesheet" href="/ux-refresh.css" />
+  <link rel="stylesheet" href="/sue-era.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -22,12 +23,20 @@
     </header>
 
     <section id="permissionCard" class="card permission-card">
-      <p class="card-kicker">내 동네 날씨로 10초 체크</p>
-      <h2>오늘 앞머리, 해도 될까?</h2>
-      <p>현재 위치의 비·습도·바람을 보고 오늘 앞머리가 얼마나 버틸지 알려드려요. PC 위치는 가끔 크게 어긋날 수 있으니 처음 한 번만 지도로 확인해 주세요.</p>
+      <div class="intro-stage">
+        <div class="intro-copy">
+          <p class="card-kicker">내 동네 날씨로 10초 체크</p>
+          <h2>오늘 앞머리, 해도 될까?</h2>
+          <p>비·습도·바람을 보고 오늘 앞머리가 얼마나 버틸지 알려드려요. 처음 한 번만 위치를 확인하면 돼요.</p>
+        </div>
+        <div class="intro-mascot-card" aria-hidden="true">
+          <img src="/intro-mascot.svg" alt="" />
+          <span class="intro-mascot-note">오늘도 준비 완료! ★</span>
+        </div>
+      </div>
       <button id="locationButton" class="primary-button" type="button">내 위치로 바로 확인하기</button>
       <button id="demoButton" class="text-button" type="button">일단 서울 예시로 보기</button>
-      <p class="privacy-note">위치는 날씨 조회에만 사용해요. 직접 확인한 최근 위치만 다음 방문을 위해 이 브라우저에 저장하며 서버 DB에는 저장하지 않습니다.</p>
+      <p class="privacy-note">PC 위치는 가끔 크게 어긋날 수 있어요. 직접 확인한 최근 위치만 이 브라우저에 저장하며 서버 DB에는 저장하지 않습니다.</p>
     </section>
 
     <section id="loadingCard" class="card state-card hidden" aria-live="polite">
@@ -61,7 +70,7 @@
       </section>
 
       <section class="hero-card card">
-        <div class="hero-topline"><span>오늘의 앞머리 생존점수</span><span id="updatedLabel" class="updated-label"></span></div>
+        <div class="hero-topline"><span>★ TODAY'S BANGS ★</span><span id="updatedLabel" class="updated-label"></span></div>
         <div id="mascot" class="mascot" data-mood="great" aria-live="polite">
           <div class="mascot-art mascot-illustration">
             <svg class="mascot-svg" viewBox="0 0 180 170" role="img" aria-label="리본을 단 여성 앞머리 캐릭터">
