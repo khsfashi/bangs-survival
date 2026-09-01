@@ -39,6 +39,14 @@ async function fetchKmaPage(options) {
   return responseNode.body || {};
 }
 
+function keepCompleteDaytimeDates(hours) {
+  const daytimeDays = new Set(hours.filter((hour) => {
+    const value = week.hourOf(hour?.time);
+    return Number.isFinite(value) && value >= week.DAY_START_HOUR && value <= week.DAY_END_HOUR;
+  }).map((hour) => week.dayKey(hour.time)));
+  return hours.filter((hour) => daytimeDays.has(week.dayKey(hour.time)));
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -70,9 +78,10 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    const hours = extended
+    let hours = extended
       ? week.parseKmaForecastItems(items, new Date(), week.KMA_MAX_HOURS)
       : logic.parseKmaForecastItems(items, new Date());
+    if (extended) hours = keepCompleteDaytimeDates(hours);
 
     if (!hours.length) return res.status(502).json({ error: 'kma_empty_forecast' });
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
