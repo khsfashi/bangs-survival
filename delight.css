@@ -20,6 +20,15 @@
   white-space: nowrap;
 }
 .encouragement-strip strong { color: #5e4d56; font-size: .79rem; line-height: 1.45; }
+.encouragement-strip[data-context="fairy"] {
+  border-style: solid;
+  border-color: #edbfd3;
+  background: linear-gradient(135deg, #fff9fd, #fff0f7 58%, #fff8df);
+}
+.encouragement-strip[data-context="fairy"] span {
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(183, 83, 124, .08);
+}
 
 .evidence-advice { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #ead7df; }
 .evidence-heading { display: grid; gap: 4px; margin-bottom: 9px; }
@@ -48,9 +57,73 @@
 @keyframes sparkle-pulse { from { opacity: .25; transform: scale(.8); } to { opacity: 1; transform: scale(1.08); } }
 @keyframes fairy-pop { 0% { opacity: 0; transform: translateY(24px) scale(.45); } 65% { opacity: 1; transform: translateY(-6px) scale(1.08); } 100% { transform: translateY(0) scale(1); } }
 
+.fairy-new-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  margin-left: 6px;
+  padding: 4px 8px;
+  border: 1px solid #f1b4cc;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff4a8, #ffd9ef);
+  color: #b74673;
+  font-size: .66rem;
+  font-weight: 1000;
+  letter-spacing: .04em;
+  vertical-align: middle;
+}
+.fairy-quote-label {
+  margin: 10px 0 3px;
+  color: #bd557d;
+  font-size: .68rem;
+  font-weight: 900;
+}
+.companion-card[data-rarity="rare"] .companion-art {
+  border-color: #cfc4ee;
+  box-shadow: 0 12px 28px rgba(110, 92, 166, .15);
+}
+.companion-card[data-rarity="special"] .companion-art {
+  border-color: #e8c36f;
+  background: linear-gradient(145deg, #fff, #fff9df 55%, #fff0fb);
+  box-shadow: 0 12px 30px rgba(187, 132, 51, .17);
+}
+.companion-card[data-rarity="special"] .companion-badge {
+  border-color: #eccd7d;
+  background: #fff8da;
+  color: #9a6a25;
+}
+.fairy-book-rarity { font-weight: 900; }
+.fairy-book-item.rarity-rare.is-unlocked {
+  border-color: #d7cdef;
+  background: linear-gradient(150deg, #fff, #faf7ff);
+}
+.fairy-book-item.rarity-special.is-unlocked {
+  border-color: #ead08b;
+  background: linear-gradient(150deg, #fff, #fff9e4 55%, #fff6fc);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.75);
+}
+.companion-card.is-first-discovery {
+  animation: fairy-card-celebrate .95s ease-out both;
+}
+.fairy-host.is-first-discovery {
+  animation: fairy-discovery-glow .95s ease-out both;
+}
+@keyframes fairy-card-celebrate {
+  0% { box-shadow: 0 15px 36px rgba(131, 67, 96, .10); }
+  35% { box-shadow: 0 17px 42px rgba(217, 133, 56, .26); }
+  100% { box-shadow: 0 15px 36px rgba(131, 67, 96, .10); }
+}
+@keyframes fairy-discovery-glow {
+  0% { transform: scale(.94); }
+  42% { transform: scale(1.045) rotate(-1deg); box-shadow: 0 0 0 5px rgba(255, 224, 126, .26), 0 14px 30px rgba(126, 83, 157, .18); }
+  100% { transform: scale(1); }
+}
+
 .fairy-gacha-book .fairy-collection { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .fairy-gacha-book .fairy-book-item span { display: block; }
 .fairy-gacha-book .fairy-book-item.is-unlocked { border-color: #efd1dd; background: #fffafd; }
+.fairy-gacha-book .fairy-book-item.rarity-rare.is-unlocked { border-color: #d7cdef; background: linear-gradient(150deg, #fff, #faf7ff); }
+.fairy-gacha-book .fairy-book-item.rarity-special.is-unlocked { border-color: #ead08b; background: linear-gradient(150deg, #fff, #fff9e4 55%, #fff6fc); }
 
 /* Visual-review tuning. Keep these selectors slightly more specific than the base layers. */
 .best-time-card.card::before {
@@ -139,6 +212,7 @@
 @media (max-width: 360px) {
   .companion-card .companion-copy { grid-template-columns: minmax(0, 1fr) 86px; gap: 10px; }
   .companion-card .companion-art { width: 84px; height: 84px; border-radius: 27px; }
+  .fairy-new-badge { margin-left: 4px; padding-inline: 7px; }
 }
 
 @media (max-width: 330px) {
@@ -149,5 +223,7 @@
 @media (prefers-reduced-motion: reduce) {
   .fairy-host.is-drawing .hair-roller-body,
   .fairy-host.is-drawing .hair-roller-sparkles,
-  .fairy-host.is-pop .fairy-svg { animation: none; }
+  .fairy-host.is-pop .fairy-svg,
+  .companion-card.is-first-discovery,
+  .fairy-host.is-first-discovery { animation: none; }
 }
