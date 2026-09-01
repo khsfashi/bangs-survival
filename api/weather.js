@@ -1,6 +1,7 @@
 const logic = require('../logic.js');
 const week = require('../week.js');
 const weekCoverage = require('../week-coverage.js');
+const requestQuery = require('../request-query.js');
 
 const KMA_URL = 'https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst';
 const PAGE_SIZE = 1000;
@@ -49,12 +50,13 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.KMA_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'kma_key_missing' });
 
-  const latitude = Number(req.query.lat);
-  const longitude = Number(req.query.lon);
+  const query = requestQuery.parseWeatherRequestUrl(req.url);
+  const latitude = Number(query.lat);
+  const longitude = Number(query.lon);
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return res.status(400).json({ error: 'invalid_coordinates' });
   if (latitude < 32 || latitude > 39.5 || longitude < 124 || longitude > 132) return res.status(400).json({ error: 'outside_korea' });
 
-  const extended = req.query.range === 'week';
+  const extended = query.range === 'week';
   const grid = logic.toKmaGrid(latitude, longitude);
   const base = logic.chooseKmaBaseDateTime(new Date());
 
