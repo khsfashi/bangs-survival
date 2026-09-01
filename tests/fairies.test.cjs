@@ -1,29 +1,33 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fairies = require('../fairies.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const legacyGuard = require('../fairies.js');
 
-test('fairy catalog exposes five deterministic weather companions', () => {
-  assert.deepEqual(fairies.ORDER, ['rain', 'wind', 'humid', 'clear', 'cloud']);
-  assert.equal(Object.keys(fairies.DEFINITIONS).length, 5);
+test('legacy five-fairy runtime methods are removed without touching core logic', () => {
+  const logic = {
+    clamp() {},
+    createDailyCompanion() {},
+    normalizeDailyCompanion() {},
+    getCollectedCompanion() {},
+    upsertDailyCompanion() {}
+  };
+
+  assert.equal(legacyGuard.disable(logic), true);
+  assert.equal(typeof logic.clamp, 'function');
+  legacyGuard.LEGACY_METHODS.forEach((key) => assert.equal(Object.hasOwn(logic, key), false));
 });
 
-test('each fairy renders local SVG without remote URLs', () => {
-  for (const key of fairies.ORDER) {
-    const first = fairies.getFairySvg(key);
-    const second = fairies.getFairySvg(key);
-    assert.equal(first, second);
-    assert.match(first, /^<svg/);
-    assert.ok(!/(?:href|src)=[\"']https?:/.test(first));
-    assert.match(first, new RegExp(fairies.DEFINITIONS[key].name));
-  }
+test('legacy guard is safe when logic is unavailable', () => {
+  assert.equal(legacyGuard.disable(null), false);
+  assert.equal(legacyGuard.disable(undefined), false);
 });
 
-test('locked fairy keeps its shape but hides the identity from accessibility label', () => {
-  const svg = fairies.getFairySvg('rain', { locked: true });
-  assert.match(svg, /is-locked/);
-  assert.match(svg, /아직 만나지 못한 앞머리 요정/);
-});
+test('legacy guard runs before the new twelve-fairy gacha runtime', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const guardIndex = html.indexOf('<script src="/fairies.js" defer></script>');
+  const gachaIndex = html.indexOf('<script src="/gacha.js" defer></script>');
 
-test('unknown fairy key falls back to cloud art', () => {
-  assert.equal(fairies.getFairySvg('unknown'), fairies.getFairySvg('cloud'));
+  assert.ok(guardIndex >= 0, 'legacy guard script must remain loaded during migration');
+  assert.ok(gachaIndex > guardIndex, 'new gacha runtime must initialize after legacy methods are disabled');
 });
