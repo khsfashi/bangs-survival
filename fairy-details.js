@@ -79,6 +79,8 @@
   }
 
   function rarityText(gacha, rarity) {
+    const meta = gacha?.RARITY_META?.[rarity];
+    if (meta) return `${meta.stars} ${meta.label} · ${meta.hint}`;
     if (gacha?.RARITY_LABEL && gacha.RARITY_LABEL[rarity]) return gacha.RARITY_LABEL[rarity];
     return ({ common: '일반', rare: '희귀', special: '반짝' })[rarity] || '일반';
   }
@@ -128,7 +130,7 @@
     const dialog = ensureDialog(document);
     const art = dialog.querySelector('#fairyDetailArt');
     if (art) art.innerHTML = gacha.getFairySvg(key);
-    dialog.querySelector('#fairyDetailRarity').textContent = `${rarityText(gacha, definition.rarity)} 요정`;
+    dialog.querySelector('#fairyDetailRarity').textContent = rarityText(gacha, definition.rarity);
     dialog.querySelector('#fairyDetailName').textContent = definition.name;
     dialog.querySelector('#fairyDetailStory').textContent = detail.story;
     dialog.querySelector('#fairyDetailWeather').textContent = weatherText(definition.affinities) || '어느 날이든';
@@ -217,5 +219,5 @@
     decorate(document);
   }
 
-  return { DETAILS, WEATHER_LABELS, detailFor, weatherText, keyFromName, bind, openFairy };
+  return { DETAILS, WEATHER_LABELS, detailFor, weatherText, rarityText, keyFromName, bind, openFairy };
 }));
