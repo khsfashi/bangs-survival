@@ -38,3 +38,12 @@ test('contextual pools are non-empty and stay inside the full pool', () => {
   const rainy = encouragement.messagesForContext(70, 'rain');
   assert.ok(rainy.includes(encouragement.pickMessage(.4, rainy)));
 });
+
+test('revealed fairy can own the daily message', () => {
+  assert.deepEqual(
+    encouragement.fairyQuote('달빛핀 요정', '긴 외출이라면 작은 핀 하나가 큰 도움이 돼요.'),
+    { label: '달빛핀 요정의 한마디', text: '긴 외출이라면 작은 핀 하나가 큰 도움이 돼요.' }
+  );
+  assert.equal(encouragement.fairyQuote('', '메시지'), null);
+  assert.equal(encouragement.fairyQuote('요정', ''), null);
+});
