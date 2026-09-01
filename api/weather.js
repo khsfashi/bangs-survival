@@ -1,5 +1,6 @@
 const logic = require('../logic.js');
 const week = require('../week.js');
+const weekCoverage = require('../week-coverage.js');
 
 const KMA_URL = 'https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst';
 const PAGE_SIZE = 1000;
@@ -39,14 +40,6 @@ async function fetchKmaPage(options) {
   return responseNode.body || {};
 }
 
-function keepCompleteDaytimeDates(hours) {
-  const daytimeDays = new Set(hours.filter((hour) => {
-    const value = week.hourOf(hour?.time);
-    return Number.isFinite(value) && value >= week.DAY_START_HOUR && value <= week.DAY_END_HOUR;
-  }).map((hour) => week.dayKey(hour.time)));
-  return hours.filter((hour) => daytimeDays.has(week.dayKey(hour.time)));
-}
-
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -78,10 +71,11 @@ module.exports = async function handler(req, res) {
       }
     }
 
+    const now = new Date();
     let hours = extended
-      ? week.parseKmaForecastItems(items, new Date(), week.KMA_MAX_HOURS)
-      : logic.parseKmaForecastItems(items, new Date());
-    if (extended) hours = keepCompleteDaytimeDates(hours);
+      ? week.parseKmaForecastItems(items, now, week.KMA_MAX_HOURS)
+      : logic.parseKmaForecastItems(items, now);
+    if (extended) hours = weekCoverage.filterCompleteDaytimeDates(hours, now);
 
     if (!hours.length) return res.status(502).json({ error: 'kma_empty_forecast' });
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
