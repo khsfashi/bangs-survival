@@ -52,10 +52,29 @@
 .fairy-gacha-book .fairy-book-item span { display: block; }
 .fairy-gacha-book .fairy-book-item.is-unlocked { border-color: #efd1dd; background: #fffafd; }
 
+/* Visual-review tuning. Keep these selectors slightly more specific than the base layers. */
+.best-time-card.card::before {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 @media (max-width: 430px) {
   .encouragement-strip { grid-template-columns: 1fr; gap: 6px; }
   .encouragement-strip span { justify-self: start; }
   .fairy-gacha-book .fairy-collection { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  .feedback-card .feedback-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .feedback-card .feedback-button { padding: 10px 5px; font-size: .75rem; line-height: 1.35; }
+}
+
+@media (max-width: 360px) {
+  .companion-card .companion-copy { grid-template-columns: minmax(0, 1fr) 86px; gap: 10px; }
+  .companion-card .companion-art { width: 84px; height: 84px; border-radius: 27px; }
+}
+
+@media (max-width: 330px) {
+  .companion-card .companion-copy { grid-template-columns: 1fr; }
+  .companion-card .companion-art { justify-self: center; width: 100px; height: 100px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
