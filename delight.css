@@ -58,6 +58,65 @@
   transform: translateY(-50%);
 }
 
+/* Screenshot-driven containment fixes.
+ * Decorative pseudo-elements must never share the same visual layer as live copy. */
+.app-shell .topbar::after,
+.hero-card.card::before,
+.companion-card.card::before {
+  content: none;
+}
+.permission-card.card::after {
+  content: none;
+  display: none;
+}
+
+/* Every generated character stays inside a predictable safe area, including the 1.08x pop frame. */
+.companion-art.fairy-host,
+.fairy-book-art,
+.fairy-detail-art {
+  overflow: hidden;
+}
+.fairy-svg,
+.hair-roller-svg,
+.mascot-svg {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+.fairy-svg .fairy-artwork {
+  transform-box: view-box;
+  transform-origin: center;
+  transform: scale(.9);
+}
+
+/* Generated fairy copy can vary in length. Never let intrinsic text width steal space from the card. */
+.companion-card .companion-copy > div:first-child,
+.companion-card .fairy-book summary > span,
+.fairy-detail-fact {
+  min-width: 0;
+}
+.companion-card .companion-badge {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.35;
+}
+.companion-card .companion-copy h2,
+.companion-card .companion-message,
+.companion-card .companion-count,
+.companion-card .fairy-gacha-button,
+.companion-card .fairy-gacha-rule,
+.companion-card .fairy-book-note,
+.companion-card .fairy-book summary > span,
+.fairy-detail-story,
+.fairy-detail-tip,
+.fairy-detail-fact strong {
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+.companion-card .fairy-book summary strong {
+  flex: 0 0 auto;
+}
+
 @media (max-width: 430px) {
   .encouragement-strip { grid-template-columns: 1fr; gap: 6px; }
   .encouragement-strip span { justify-self: start; }
@@ -65,6 +124,16 @@
 
   .feedback-card .feedback-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .feedback-card .feedback-button { padding: 10px 5px; font-size: .75rem; line-height: 1.35; }
+
+  /* At phone widths the original 128px art column wastes text space after a draw. */
+  .companion-card .companion-copy { grid-template-columns: minmax(0, 1fr) 100px; gap: 12px; }
+  .companion-card .companion-art { width: 96px; height: 96px; }
+  .companion-card .fairy-gacha-button { padding-inline: 10px; font-size: .88rem; line-height: 1.35; }
+}
+
+@media (max-width: 390px) {
+  .companion-card .companion-copy { grid-template-columns: minmax(0, 1fr) 92px; gap: 10px; }
+  .companion-card .companion-art { width: 90px; height: 90px; }
 }
 
 @media (max-width: 360px) {
