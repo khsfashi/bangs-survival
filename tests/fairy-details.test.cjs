@@ -18,6 +18,12 @@ test('weather labels are friendly Korean copy', () => {
   assert.equal(details.weatherText(['wind', 'clear']), '바람 부는 날 · 맑은 날');
 });
 
+test('rarity copy uses the same stars and plain-language meaning as gacha', () => {
+  assert.equal(details.rarityText(gacha, 'common'), '★ 일반 · 자주 만나요');
+  assert.equal(details.rarityText(gacha, 'rare'), '★★ 희귀 · 가끔 만나요');
+  assert.equal(details.rarityText(gacha, 'special'), '★★★ 반짝 · 아주 드물게 만나요');
+});
+
 test('fairy key can be recovered from the displayed fairy name', () => {
   const fakeGacha = { ORDER: gacha.ORDER, DEFINITIONS: gacha.DEFINITIONS };
   for (const key of gacha.ORDER) {
