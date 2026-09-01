@@ -168,6 +168,13 @@
     return MESSAGE_GROUPS[contextKey(score, weatherKind)] || MESSAGE_GROUPS.gentle;
   }
 
+  function fairyQuote(name, message) {
+    const safeName = String(name || '').trim();
+    const safeMessage = String(message || '').trim();
+    if (!safeName || !safeMessage) return null;
+    return { label: `${safeName}의 한마디`, text: safeMessage };
+  }
+
   function secureRandom01(cryptoObject) {
     if (cryptoObject?.getRandomValues) {
       const values = new Uint32Array(1);
@@ -181,6 +188,8 @@
     const hero = document.querySelector('.hero-card');
     const score = document.querySelector('#scoreValue');
     const companion = document.querySelector('#companionCard');
+    const companionName = document.querySelector('#companionName');
+    const companionMessage = document.querySelector('#companionMessage');
     if (!hero || !score) return;
 
     let strip = document.querySelector('#encouragementStrip');
@@ -199,6 +208,20 @@
     const render = () => {
       const numeric = Number(score.textContent);
       if (!Number.isFinite(numeric)) return;
+
+      if (companion?.dataset?.gachaState === 'revealed') {
+        const quote = fairyQuote(companionName?.textContent, companionMessage?.textContent);
+        if (quote) {
+          const signature = `fairy:${companion.dataset.fairyKey || quote.label}:${quote.text}`;
+          if (signature === lastSignature && text.textContent) return;
+          lastSignature = signature;
+          label.textContent = quote.label;
+          text.textContent = quote.text;
+          strip.dataset.context = 'fairy';
+          return;
+        }
+      }
+
       const weatherKind = companion?.dataset?.kind || 'cloud';
       const key = contextKey(numeric, weatherKind);
       const signature = `${numeric}:${weatherKind}`;
@@ -212,8 +235,16 @@
     const scoreObserver = new MutationObserver(render);
     scoreObserver.observe(score, { childList: true, characterData: true, subtree: true });
     if (companion) {
-      const weatherObserver = new MutationObserver(render);
-      weatherObserver.observe(companion, { attributes: true, attributeFilter: ['data-kind'] });
+      const stateObserver = new MutationObserver(render);
+      stateObserver.observe(companion, { attributes: true, attributeFilter: ['data-kind', 'data-gacha-state', 'data-fairy-key'] });
+    }
+    if (companionName) {
+      const nameObserver = new MutationObserver(render);
+      nameObserver.observe(companionName, { childList: true, characterData: true, subtree: true });
+    }
+    if (companionMessage) {
+      const messageObserver = new MutationObserver(render);
+      messageObserver.observe(companionMessage, { childList: true, characterData: true, subtree: true });
     }
     render();
   }
@@ -225,6 +256,7 @@
     pickMessage,
     contextKey,
     messagesForContext,
+    fairyQuote,
     bind
   };
 }));
