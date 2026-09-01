@@ -86,7 +86,7 @@
 .fairy-svg .fairy-artwork {
   transform-box: view-box;
   transform-origin: center;
-  transform: scale(.9);
+  transform: scale(.86);
 }
 
 /* Generated fairy copy can vary in length. Never let intrinsic text width steal space from the card. */
